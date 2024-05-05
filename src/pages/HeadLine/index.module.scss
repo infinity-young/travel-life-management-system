@@ -1,9 +1,37 @@
 .table {
     width: 100%; // 确保表格填满父容器
-    background-color: aqua;
+    table-layout: fixed;
     th,
     td {
       width: 10%; // 设置单元格宽度为父容器宽度的十分之一
-      background-color: aqua;
+      background-color: rgba(228, 239, 239, 0.889);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; /* 使用省略号表示溢出的文本 */
+  }
+  img{
+    height: 100%;
+    width: 100%;
   }
 }
+.checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px; /* 选择框大小 */
+    height: 20px;
+    border: 1px solid #ccc; /* 选择框边框 */
+    border-radius: 4px; /* 边框圆角 */
+    position: relative;
+    cursor: pointer;
+  
+    &:checked::after {
+      content: '✔'; /* 对钩字符 */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #009688; /* 对钩颜色 */
+      font-size: 16px;
+    }
+  }

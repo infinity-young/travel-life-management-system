@@ -1,4 +1,4 @@
-import { HEADLINE_GET_PATH } from '../../config/requestConfig.ts';
+import { HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
 import React, { useMemo, useState } from 'react';
 import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
@@ -37,8 +37,8 @@ const TableComponent = () => {
   return (
     <div>
       <div>
-        <button onClick={handleAdd}>新增</button>
-        <button onClick={handleDelete}>删除</button>
+        <button onClick={handleAdd}>新增头条</button>
+        <button onClick={handleDelete}>批量删除头条</button>
         <input
           type="text"
           value={filter}
@@ -50,6 +50,7 @@ const TableComponent = () => {
         <thead>
           <tr>
             {/* 表头内容 */}
+            <th>选择</th>
             <th>头条名称</th>
             <th>头条链接</th>
             <th>头条图片</th>
@@ -64,10 +65,16 @@ const TableComponent = () => {
         <tbody>
           {/* 表格数据渲染 */}
           {data.rows.map((row, index) => (
-            <tr key={index}>
+              <tr key={index}>
+                  <td> <input type="checkbox" className={styles.checkbox} /></td>
               <td>{row.lineName}</td>
               <td>{row.lineLink}</td>
-              <td>{row.lineImg}</td>
+                  <td><img
+               key={index}
+               src={IMAGE_PATH+row.lineImg}
+            //    className={index===currentImageIndex?styles.active:styles.hidden}
+               /></td>
+                  
                   <td>{row.priority}</td>
                   <td>{row.enableStatus}</td>
                   <td>{row.createTime}</td>

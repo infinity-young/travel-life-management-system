@@ -17,9 +17,11 @@ function App() {
           <h2>导航菜单</h2>
           <ul style={{ listStyleType: 'none', padding: 0 }}>
             <li><Link to="/">首页</Link></li>
-            <li><Link to="/page1">页面1</Link></li>
-            <li><Link to="/page2">页面2</Link></li>
-            <li><Link to="/page3">页面3</Link></li>
+            <li><Link to="/page1">头条管理</Link></li>
+            <li><Link to="/page2">类别管理</Link></li>
+            <li><Link to="/page3">区域管理</Link></li>
+            <li><Link to="/page3">账号管理</Link></li>
+            <li><Link to="/page3">商铺管理</Link></li>
           </ul>
         </div>
 
