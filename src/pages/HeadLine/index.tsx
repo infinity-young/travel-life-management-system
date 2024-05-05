@@ -1,6 +1,6 @@
-import { HEADLINE_GET_PATH } from '../config/requestConfig.ts';
+import { HEADLINE_GET_PATH } from '../../config/requestConfig.ts';
 import React, { useMemo, useState } from 'react';
-import { useFormData } from '../hooks/formData.ts';
+import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
 
 

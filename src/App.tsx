@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import TableComponent from './pages/HeadLine.tsx';
+import TableComponent from './pages/HeadLine/index.tsx';
 
 // 假设我们有几个要跳转的页面组件
 const Home = () => <div>首页内容</div>;
