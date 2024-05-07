@@ -45,3 +45,9 @@
       margin-right: 10px;
     }
   }
+  .dialogContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }

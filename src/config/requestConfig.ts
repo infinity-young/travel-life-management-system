@@ -1,3 +1,6 @@
 export const BATH_PATH='http://localhost:8080/basic-webapp/superadmin'
 export const IMAGE_PATH = 'http://localhost:8080/basic-webapp/superadmin/'
-export const HEADLINE_GET_PATH='/listheadlines'
+export const HEADLINE_GET_PATH = '/listheadlines'
+export const HEADLINE_ADD_PATH = ''
+export const HEADLINE_EDIT_PATH = ''
+export const HEADLINE_DELETE_PATH = ''

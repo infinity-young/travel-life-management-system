@@ -1,0 +1,16 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    width: 100%;
+}
+.title{
+    color: #000;
+    margin-right: 10px;
+    width: 30%;
+}
+.value{
+    display: flex;
+    flex: 1;
+    width: 60%;
+}

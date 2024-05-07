@@ -1,26 +1,62 @@
-import { HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
+import { HEADLINE_ADD_PATH, HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
 import React, { useMemo, useState } from 'react';
 import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
+import { ImageUploadItem, InputItem, SelectItem } from '../../components/dialogComponents/index.tsx';
+import { useSubmitForm } from '../../hooks/submitForm.tsx';
 
 //编辑按钮
-const EditButton=()=>{
-  const { renderModal, toggleModal } = useModal();
-
+const EditButton = (data) => {
+  const row = data?.row || {}
+  const submitForm = () => {
+    console.log("=====submit=====")
+  }
+  const resetForm = () => {
+    console.log("====reset=====");
+  }
+  const { renderModal, toggleModal } = useModal(submitForm,resetForm);
+  const handleSelectChange = (e) => {
+    console.log("=====status=",e)
+  }
+  const handleImageUpload = (e) => {
+    console.log("=====image==", e);
+  }
+  const selectOptions = [ { value: 0, label: '禁用' },
+  { value: 1, label: '启用' }]
+   
+  // const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
+  console.log("==row===", row)
+  // console.log("==row.lineName===",row.row.lineName)
+  const handleTitleInputChange = (e) => {
+    console.log("===title===", e);
+  }
+  const handleLinkInputChange = (e) => {
+    console.log("==link====", e);
+  }
+  const handlePriorityInputChange = (e) => {
+    console.log("===priority===", e);
+  }
   return (
     <>
       <button onClick={toggleModal}>编辑</button>
       {renderModal(
-        <div>这里是弹窗内容，如表单输入等</div>
+        <div className={styles.dialogContainer}>
+           <p>头条编辑</p>
+          <InputItem title="头条名称" onInputChange={handleTitleInputChange} defaultValue={ row.lineName} />
+          <InputItem title="头条链接" onInputChange={handleLinkInputChange} defaultValue={row.lineLink} />
+          <ImageUploadItem title="头条图片" onImageUpload={handleImageUpload}  />
+          <InputItem title="优先级" onInputChange={handlePriorityInputChange} defaultValue={row.priority } />
+          <SelectItem title="状态" options={selectOptions} defaultValue={ row.enableStatus} onSelectChange={handleSelectChange} />
+        </div>
       )}
     </>
   );
 }
 
 //删除按钮
-const DeleteButton = () => {
+const DeleteButton = (row) => {
   const { ConfirmDeleteModal, openDeleteModal } = useConfirmDelete();
 
   // 删除操作的逻辑
@@ -148,7 +184,7 @@ const TableComponent = () => {
               <td>{row.enableStatus}</td>
               <td>{row.createTime}</td>
               <td>{row.lastEditTime}</td>
-              <td> <div><EditButton /> <DeleteButton/></div></td>
+              <td> <div><EditButton row={row} /> <DeleteButton row={row} /></div></td>
             </tr>
           ))}
         </tbody>
