@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import TableComponent from './pages/HeadLine/index.tsx';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // 假设我们有几个要跳转的页面组件
 const Home = () => <div>首页内容</div>;
@@ -12,6 +15,7 @@ function App() {
   return (
     <Router>
       <div style={{ display: 'flex' }}>
+      <ToastContainer />
         {/* 侧边栏，始终显示 */}
         <div style={{ padding: '10px', width: '15%',height:'100%', background: '#f0f0f0' }}>
           <h2>导航菜单</h2>
