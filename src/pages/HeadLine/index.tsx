@@ -1,5 +1,5 @@
 import { HEADLINE_ADD_PATH, HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
@@ -9,34 +9,56 @@ import { useSubmitForm } from '../../hooks/submitForm.tsx';
 
 //编辑按钮
 const EditButton = (data) => {
-  const row = data?.row || {}
+  const [renderFormData, setRenderFormData] = useState(data?.row || {});
+  useEffect(() => {
+    console.log("renderFormData has been updated", renderFormData);
+  }, [renderFormData]); 
   const submitForm = () => {
-    console.log("=====submit=====")
+    // console.log("=====submit=====",row)
+    
   }
   const resetForm = () => {
-    console.log("====reset=====");
+    const resetItem = {
+      lineName: '',
+      lineLink: '',
+      priority: 0,
+      enableStatus: 0,
+      lineImg:'',
+    }
+    const newRenderFormData = { ...renderFormData, ...resetItem }
+    setRenderFormData(newRenderFormData);
   }
   const { renderModal, toggleModal } = useModal(submitForm,resetForm);
   const handleSelectChange = (e) => {
-    console.log("=====status=",e)
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, enableStatus: e};
+    });
   }
   const handleImageUpload = (e) => {
-    console.log("=====image==", e);
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineImg: e};
+    });
   }
   const selectOptions = [ { value: 0, label: '禁用' },
   { value: 1, label: '启用' }]
    
   // const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
-  console.log("==row===", row)
+  // console.log("==row===", row)
   // console.log("==row.lineName===",row.row.lineName)
   const handleTitleInputChange = (e) => {
-    console.log("===title===", e);
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineName: e};
+    });
   }
   const handleLinkInputChange = (e) => {
-    console.log("==link====", e);
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineLink: e};
+    });
   }
   const handlePriorityInputChange = (e) => {
-    console.log("===priority===", e);
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, priority: e};
+    });
   }
   return (
     <>
@@ -44,11 +66,11 @@ const EditButton = (data) => {
       {renderModal(
         <div className={styles.dialogContainer}>
            <p>头条编辑</p>
-          <InputItem title="头条名称" onInputChange={handleTitleInputChange} defaultValue={ row.lineName} />
-          <InputItem title="头条链接" onInputChange={handleLinkInputChange} defaultValue={row.lineLink} />
+          <InputItem title="头条名称" onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
+          <InputItem title="头条链接" onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
           <ImageUploadItem title="头条图片" onImageUpload={handleImageUpload}  />
-          <InputItem title="优先级" onInputChange={handlePriorityInputChange} defaultValue={row.priority } />
-          <SelectItem title="状态" options={selectOptions} defaultValue={ row.enableStatus} onSelectChange={handleSelectChange} />
+          <InputItem title="优先级" onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
+          <SelectItem title="状态" options={selectOptions} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
         </div>
       )}
     </>
@@ -74,14 +96,80 @@ const DeleteButton = (row) => {
 };
 
 //新增按钮
-const AddButton=()=>{
-  const { renderModal, toggleModal } = useModal();
-
+const AddButton = () => {
+  const defaultValue = {
+    lineName: '',
+    lineLink: '',
+    priority: 0,
+    enableStatus: 0,
+    lineImg:'',
+  }
+  const [renderFormData, setRenderFormData] = useState(defaultValue);
+    const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
+  useEffect(() => {
+    console.log("renderFormData has been updated", renderFormData);
+  }, [renderFormData]); 
+  // const submitForm = () => {
+  //   console.log("=====submit=====",renderFormData)
+  //   setFormData(renderFormData);
+    
+  // }
+  const submitForm = useCallback(() => {
+    console.log("=====submit=====", renderFormData);
+    setFormData(renderFormData);
+  }, [renderFormData]); 
+  const resetForm = () => {
+    const resetItem = {
+      lineName: '',
+      lineLink: '',
+      priority: '',
+      enableStatus: '',
+      lineImg:'',
+    }
+    const newRenderFormData = { ...renderFormData, ...resetItem }
+    setRenderFormData(newRenderFormData);
+  }
+  const { renderModal, toggleModal } = useModal(submitForm,resetForm);
+  const handleSelectChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, enableStatus: e};
+    });
+  }
+  const handleImageUpload = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineImg: e};
+    });
+  }
+  const selectOptions = [ { value: 0, label: '禁用' },
+  { value: 1, label: '启用' }]
+   
+  const handleTitleInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineName: e};
+    });
+  }
+  const handleLinkInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineLink: e};
+    });
+  }
+  const handlePriorityInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, priority: e};
+    });
+  }
   return (
     <>
       <button onClick={toggleModal}>新增头条</button>
       {renderModal(
-        <div>这里是弹窗内容，如表单输入等</div>
+        <div className={styles.dialogContainer}>
+           <p>头条编辑</p>
+          <InputItem title="头条名称" onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
+          <InputItem title="头条链接" onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
+          <ImageUploadItem title="头条图片" onImageUpload={handleImageUpload}  />
+          <InputItem title="优先级" onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
+          <SelectItem title="状态" options={selectOptions} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
+        </div>
       )}
     </>
   );
