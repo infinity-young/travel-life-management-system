@@ -1,5 +1,5 @@
 import { HEADLINE_ADD_PATH, HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
@@ -105,25 +105,22 @@ const AddButton = () => {
     lineImg:'',
   }
   const [renderFormData, setRenderFormData] = useState(defaultValue);
-    const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
-  useEffect(() => {
-    console.log("renderFormData has been updated", renderFormData);
-  }, [renderFormData]); 
-  // const submitForm = () => {
-  //   console.log("=====submit=====",renderFormData)
-  //   setFormData(renderFormData);
-    
-  // }
-  const submitForm = useCallback(() => {
-    console.log("=====submit=====", renderFormData);
-    setFormData(renderFormData);
-  }, [renderFormData]); 
+  const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
+  const renderFormDataRef = useRef(renderFormData);
+
+useEffect(() => {
+  renderFormDataRef.current = renderFormData;
+}, [renderFormData]);
+
+const submitForm = () => {
+  setFormData(renderFormDataRef.current);
+};
   const resetForm = () => {
     const resetItem = {
       lineName: '',
       lineLink: '',
       priority: '',
-      enableStatus: '',
+      enableStatus: 0,
       lineImg:'',
     }
     const newRenderFormData = { ...renderFormData, ...resetItem }

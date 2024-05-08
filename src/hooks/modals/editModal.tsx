@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import styles from './index.module.scss'
-import { useSubmitForm } from '../submitForm.ts';
-import { HEADLINE_ADD_PATH } from '../../config/requestConfig.ts';
 
 
 // 弹窗UI组件
@@ -25,7 +23,6 @@ const Modal = ({ isVisible, onClose,onSubmit,onReset, children }) => {
 // useModal Hook，封装了弹窗的状态和UI渲染
 export function useModal(onSubmit,onReset) {
   const [isVisible, setIsVisible] = useState(false);
-  const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
 
 
  //开关弹窗
