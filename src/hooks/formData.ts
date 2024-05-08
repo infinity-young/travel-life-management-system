@@ -11,6 +11,7 @@ export function useFormData(url, params) {
     const FormData = async () => {
       try {
         setLoading(true);
+        console.log("=====url==",url)
           const response = await axios.post(BATH_PATH+url, params, {
               headers: {
                   'Content-Type': 'multipart/form-data',

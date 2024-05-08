@@ -35,7 +35,6 @@ export function useModal(onSubmit,onReset) {
     if (onSubmit) {
       onSubmit();
     }
-    setIsVisible(false); // 关闭弹窗
   }, [onSubmit]);
 
 //重置弹窗数据
@@ -61,6 +60,7 @@ export function useModal(onSubmit,onReset) {
     toggleModal,
     renderModal,
     submitModal,
-    resetModal
+    resetModal,
+    setIsVisible
   };
 }

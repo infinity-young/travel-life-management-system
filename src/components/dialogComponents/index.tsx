@@ -1,5 +1,22 @@
 import React from 'react';
 import styles from './index.module.scss'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//弹窗
+export const showToast = (message) => {
+  toast(message, {
+    position: "top-center", // 顶部居中
+    autoClose: 1000, // 5秒后自动关闭
+    hideProgressBar: false, // 显示进度条
+    closeOnClick: true, // 点击可关闭
+    pauseOnHover: true, // 鼠标悬停时暂停
+    draggable: true, // 可拖动
+    progress: undefined,
+  });
+};
+
+
 // 输入框组件
 export const InputItem = ({ title, onInputChange, value = '' }) => {
   return (

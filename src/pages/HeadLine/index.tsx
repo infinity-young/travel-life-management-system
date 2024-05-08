@@ -4,8 +4,8 @@ import { useFormData } from '../../hooks/formData.ts';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
-import { ImageUploadItem, InputItem, SelectItem } from '../../components/dialogComponents/index.tsx';
-import { useSubmitForm } from '../../hooks/submitForm.tsx';
+import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
+import { validateForm } from '../../utils/formUtil.ts';
 
 //编辑按钮
 const EditButton = (data) => {
@@ -42,9 +42,6 @@ const EditButton = (data) => {
   const selectOptions = [ { value: 0, label: '禁用' },
   { value: 1, label: '启用' }]
    
-  // const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
-  // console.log("==row===", row)
-  // console.log("==row.lineName===",row.row.lineName)
   const handleTitleInputChange = (e) => {
     setRenderFormData(prevFormData => {
       return {...prevFormData, lineName: e};
@@ -105,16 +102,50 @@ const AddButton = () => {
     lineImg:'',
   }
   const [renderFormData, setRenderFormData] = useState(defaultValue);
-  const { formData, setFormData, handleSubmit } = useSubmitForm([], HEADLINE_ADD_PATH);
   const renderFormDataRef = useRef(renderFormData);
 
 useEffect(() => {
   renderFormDataRef.current = renderFormData;
 }, [renderFormData]);
+const formData = useMemo(() => {
+  const headLineObj = { ...renderFormData };
+  // delete headLineObj.lineImg; // 如果你不需要lineImg，取消这行注释
+  const headLineStr = JSON.stringify(headLineObj);
+  const fd = new FormData();
+  fd.append('headLineManagementAdd_lineImg', 'ALL');
+  fd.append('headLineStr', headLineStr);
+  // fd.append('thumbnail','') // 如果你需要添加thumbnail，取消这行注释
+  return fd;
+}, [renderFormData]);
+  const [shouldSubmit, setShouldSubmit] = useState(false);
+  const { data } = useFormData(HEADLINE_ADD_PATH, formData);
 
-const submitForm = () => {
-  setFormData(renderFormDataRef.current);
-};
+// 当shouldSubmit为true时，发送表单数据
+useEffect(() => {
+  if (shouldSubmit) {
+    console.log("====sub===")
+    if (data && data.success) {
+      setIsVisible(false);
+    }
+    // 重置shouldSubmit状态，以便下次提交
+    setShouldSubmit(false);
+  }
+}, [shouldSubmit, formData]);
+
+
+  const submitForm = () => {
+    // 校验是否都输入
+    const validatedResult = validateForm(renderFormDataRef.current);
+    // 校验通过发起请求
+    if (validatedResult.isValidated) {
+      // 设置shouldSubmit为true以触发useEffect中的请求发送
+      setShouldSubmit(true);
+    } else {
+      const message = validatedResult.unvalidatedKey + '是必填项';
+      showToast(message);
+    }
+  };
+  
   const resetForm = () => {
     const resetItem = {
       lineName: '',
@@ -126,7 +157,7 @@ const submitForm = () => {
     const newRenderFormData = { ...renderFormData, ...resetItem }
     setRenderFormData(newRenderFormData);
   }
-  const { renderModal, toggleModal } = useModal(submitForm,resetForm);
+  const { renderModal, toggleModal,setIsVisible } = useModal(submitForm,resetForm);
   const handleSelectChange = (e) => {
     setRenderFormData(prevFormData => {
       return {...prevFormData, enableStatus: e};
