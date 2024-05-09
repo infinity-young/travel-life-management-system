@@ -6,6 +6,7 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
+import { postRequest } from '../../request/index.ts';
 
 //编辑按钮
 const EditButton = (data) => {
@@ -103,34 +104,27 @@ const AddButton = () => {
   }
   const [renderFormData, setRenderFormData] = useState(defaultValue);
   const renderFormDataRef = useRef(renderFormData);
+  const [submitFormData, setSubmitFormData] = useState([]);
 
 useEffect(() => {
   renderFormDataRef.current = renderFormData;
 }, [renderFormData]);
-const formData = useMemo(() => {
-  const headLineObj = { ...renderFormData };
-  // delete headLineObj.lineImg; // 如果你不需要lineImg，取消这行注释
-  const headLineStr = JSON.stringify(headLineObj);
-  const fd = new FormData();
-  fd.append('headLineManagementAdd_lineImg', 'ALL');
-  fd.append('headLineStr', headLineStr);
-  // fd.append('thumbnail','') // 如果你需要添加thumbnail，取消这行注释
-  return fd;
-}, [renderFormData]);
-  const [shouldSubmit, setShouldSubmit] = useState(false);
-  const { data } = useFormData(HEADLINE_ADD_PATH, formData);
 
-// 当shouldSubmit为true时，发送表单数据
 useEffect(() => {
-  if (shouldSubmit) {
-    console.log("====sub===")
-    if (data && data.success) {
-      setIsVisible(false);
+  // 定义一个异步函数来发送请求
+  const fetchData = async () => {
+    try {
+      const requestData = await postRequest(HEADLINE_ADD_PATH, submitFormData);
+      //提交成功toast提示并关闭弹窗，否则不关闭。
+      // toggleModal()
+     
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    // 重置shouldSubmit状态，以便下次提交
-    setShouldSubmit(false);
-  }
-}, [shouldSubmit, formData]);
+  };
+
+  fetchData(); // 调用异步函数
+}, [submitFormData]); // 依赖数组中包含了 formData
 
 
   const submitForm = () => {
@@ -138,8 +132,15 @@ useEffect(() => {
     const validatedResult = validateForm(renderFormDataRef.current);
     // 校验通过发起请求
     if (validatedResult.isValidated) {
-      // 设置shouldSubmit为true以触发useEffect中的请求发送
-      setShouldSubmit(true);
+      
+      const headLineObj = { ...renderFormDataRef.current };
+      delete headLineObj.lineImg; // 如果你不需要lineImg，取消这行注释
+      const headLineStr = JSON.stringify(headLineObj);
+      const fd = new FormData();
+      fd.append('headLineManagementAdd_lineImg',headLineObj.lineImg);
+      fd.append('headLineStr', headLineStr);
+      //设置submitFormData来触发网络请求
+      setSubmitFormData(fd);
     } else {
       const message = validatedResult.unvalidatedKey + '是必填项';
       showToast(message);
@@ -223,15 +224,28 @@ const PatchDeleteButton =({ selectedIds }) => {
 const TableComponent = () => {
   const [filter, setFilter] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
-    //以formdata的形式提交数据
-     // 使用useMemo来确保formData只在组件首次渲染时创建一次
+  const [data, setData] = useState([]);
+  //以formdata的形式提交数据
+  // 使用useMemo来确保formData只在组件首次渲染时创建一次
   const formData = useMemo(() => {
     const fd = new FormData();
     fd.append('enableStatus', 'ALL');
     return fd;
   }, []);
+  useEffect(() => {
+    // 定义一个异步函数来发送请求，网络请求是副作用，应该放在此处
+    const fetchData = async () => {
+      try {
+        const requestData = await postRequest(HEADLINE_GET_PATH, formData);
+        setData(requestData.data); 
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-    const { data=[] } = useFormData(HEADLINE_GET_PATH, formData);
+    fetchData(); // 调用异步函数
+  }, [formData]); // 依赖数组中包含了 formData
+
 
   // 筛选数据的函数（示例中未实现筛选逻辑） todo
   const handleFilterChange = (event) => {
@@ -251,7 +265,7 @@ const TableComponent = () => {
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
   }
-  if (!data) {
+  if (!data||!data.rows) {
       return <></>
     } 
   return (
