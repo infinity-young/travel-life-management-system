@@ -13,7 +13,6 @@ const useConfirmDelete = () => {
     setIsDeleteModalOpen(false);
   }, []);
     
-  //todo 删除成功应该向外部暴露回调方便页面刷新，接口成功失败都应该有toast提示
  
 
   const ConfirmDeleteModal = ({ onConfirm }) => {
