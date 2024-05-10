@@ -40,6 +40,7 @@ const submitForm = async () => {
       if (requestData.data?.success) {
         showToast('提交成功');
         toggleModal()
+        //todo 刷新逻辑
       } else {
         //提交失败
         showToast('提交失败')
@@ -159,6 +160,7 @@ const submitForm = async () => {
       if (requestData.data?.success) {
         showToast('提交成功');
         toggleModal()
+        // todo 重新请求
       } else {
         //提交失败
         showToast('提交失败')
