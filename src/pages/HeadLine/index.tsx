@@ -9,7 +9,8 @@ import { postRequest, postRequestJson } from '../../request/index.ts';
 
 //编辑按钮
 const EditButton = (data) => {
-  const initState = data?.row || {};
+  //如果直接引用会导致父组件img标签渲染异常
+  const initState = {...data?.row} || {};
   delete initState.lineImg;
   delete initState.createTime;
   delete initState.lastEditTime;
@@ -296,7 +297,7 @@ const TableComponent = () => {
 
 
   const handleChange = (event, id) => {
-    //将选中的元素添加到待删除框
+    // 将选中的元素添加到待删除框
     if (event.target.checked) {
       // 如果选中，将id添加到数组中
       setSelectedIds((prevSelectedIds) => [...prevSelectedIds, id]);
@@ -304,12 +305,10 @@ const TableComponent = () => {
       // 如果取消选中，将id从数组中移除
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
-  }
+  };
   if (!data||!data.rows) {
       return <></>
   } 
-  console.log('====v====', IMAGE_PATH);
-  console.log("=====data.rows====", data.rows);
   return (
     <div>
       <div className={styles.headContainer}>
