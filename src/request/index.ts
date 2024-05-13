@@ -17,10 +17,11 @@ export function getRequest(path: string, params?: Record<string, any>) {
   });
 }
 
-export function postRequestJson(path:string,params?){
+export function postRequestJson(path:string,data?,params?){
   const fullPath=BATH_PATH+path;
   return new Promise((resolve,reject)=>{
-    axios.post(fullPath,JSON.stringify(params), {
+    axios.post(fullPath, JSON.stringify(data), {
+      params:params,
       headers: {
         'Content-Type': 'application/json',
       }
@@ -35,10 +36,10 @@ export function postRequestJson(path:string,params?){
     );
   })
 }
-export function postRequest(path:string,params?){
+export function postRequest(path:string,data?,params?){
   const fullPath=BATH_PATH+path;
   return new Promise((resolve,reject)=>{
-    axios.post(fullPath,params, {
+    axios.post(fullPath,data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

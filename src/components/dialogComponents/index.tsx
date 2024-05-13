@@ -74,3 +74,23 @@ export const ImageUploadItem = ({
     </li>
   );
 };
+
+
+export const FilterItem = ({
+  options,
+  onSelectChange,
+  value = 0
+}) => {
+  return (
+      <select
+        onChange={(e) => onSelectChange(e.target.value)}
+        value={value} // 使用受控组件的值
+      >
+        {options.map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+  );
+};

@@ -1,16 +1,17 @@
-import { HEADLINE_ADD_PATH, HEADLINE_EDIT_PATH, HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
+import { HEADLINE_ADD_PATH, HEADLINE_BATCH_DELETE_PATH, HEADLINE_DELETE_PATH, HEADLINE_EDIT_PATH, HEADLINE_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
-import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
+import { FilterItem, ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import { postRequest, postRequestJson } from '../../request/index.ts';
+//todo 刷新状态问题
 
 //编辑按钮
-const EditButton = (data) => {
+const EditButton = ({row,setFilter}) => {
   //如果直接引用会导致父组件img标签渲染异常
-  const initState = {...data?.row} || {};
+  const initState = {...row} || {};
   delete initState.lineImg;
   delete initState.createTime;
   delete initState.lastEditTime;
@@ -40,8 +41,9 @@ const submitForm = async () => {
       //提交成功toast提示并关闭弹窗
       if (requestData.data?.success) {
         showToast('提交成功');
+         //刷新逻辑
+         setFilter('ALL')
         toggleModal()
-        //todo 刷新逻辑
       } else {
         //提交失败
         showToast('提交失败')
@@ -111,13 +113,20 @@ const submitForm = async () => {
 }
 
 //删除按钮
-const DeleteButton = (row) => {
-  const { ConfirmDeleteModal, openDeleteModal } = useConfirmDelete();
+const DeleteButton = ({row,setFilter}) => {
+  const { ConfirmDeleteModal, openDeleteModal ,closeDeleteModal} = useConfirmDelete();
 
   // 删除操作的逻辑
-  const handleDelete = () => {
-    // 执行实际的删除操作
-    console.log('项目已删除');
+  const handleDelete = async () => {
+    const params={headLineId:row?.lineId}
+    const responseData = await postRequestJson(HEADLINE_DELETE_PATH,{},params)
+    if (responseData.data?.success) {
+      setFilter("ALL");
+      showToast('删除成功');
+      closeDeleteModal()
+    } else {
+      showToast('删除失败')
+    }
   };
 
   return (
@@ -129,7 +138,7 @@ const DeleteButton = (row) => {
 };
 
 //新增按钮
-const AddButton = () => {
+const AddButton = ({setFilter}) => {
   const defaultValue = {
     lineName: '',
     lineLink: '',
@@ -160,8 +169,9 @@ const submitForm = async () => {
       //提交成功toast提示并关闭弹窗
       if (requestData.data?.success) {
         showToast('提交成功');
+        //  重新请求
+        setFilter('ALL')
         toggleModal()
-        // todo 重新请求
       } else {
         //提交失败
         showToast('提交失败')
@@ -230,21 +240,21 @@ const submitForm = async () => {
     </>
   );
 }
-//批量删除按钮 todo
-const PatchDeleteButton =({ selectedIds }) => {
+//批量删除按钮 
+const PatchDeleteButton =({ selectedIds,setFilter }) => {
   const { ConfirmDeleteModal, openDeleteModal } = useConfirmDelete();
-  console.log('===selectedIds==',selectedIds)
   // 删除操作的逻辑
   const handleDelete = async () => {
     //关闭弹窗
     console.log('项目已删除');
     try {
-      const parms = {
+      const params = {
         headLineIdListStr: selectedIds.join(',')
       }
-      const responseDate =  await postRequestJson(HEADLINE_EDIT_PATH, parms);
+      const responseDate = await postRequestJson(HEADLINE_BATCH_DELETE_PATH, {}, params);
       if (responseDate.data.success) {
         showToast('删除数据成功')
+        setFilter("ALL")
       } else {
         showToast('删除数据失败')
       }
@@ -263,16 +273,16 @@ const PatchDeleteButton =({ selectedIds }) => {
 }
 
 const TableComponent = () => {
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState('All');
   const [selectedIds, setSelectedIds] = useState([]);
   const [data, setData] = useState([]);
   //以formdata的形式提交数据
   // 使用useMemo来确保formData只在组件首次渲染时创建一次
   const formData = useMemo(() => {
     const fd = new FormData();
-    fd.append('enableStatus', 'ALL');
+    fd.append('enableStatus', filter);
     return fd;
-  }, []);
+  }, [filter]);
   useEffect(() => {
     // 定义一个异步函数来发送请求，网络请求是副作用，应该放在此处
     const fetchData = async () => {
@@ -287,15 +297,10 @@ const TableComponent = () => {
     fetchData(); // 调用异步函数
   }, [formData]); // 依赖数组中包含了 formData
 
-
-  // 筛选数据的函数（示例中未实现筛选逻辑） todo
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-    // 在这里可以添加筛选逻辑
+  // 筛选数据的函数
+  const handleFilterChange = (value) => {
+    setFilter(value);
   };
-
-
-
   const handleChange = (event, id) => {
     // 将选中的元素添加到待删除框
     if (event.target.checked) {
@@ -306,20 +311,16 @@ const TableComponent = () => {
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
   };
+  const selectOptions = [{ value: 'ALL', label: "全部" }, { value: 1,label:"启用"},{value:0,label:"禁用"}]
   if (!data||!data.rows) {
       return <></>
   } 
   return (
     <div>
       <div className={styles.headContainer}>
-        <AddButton/>
-        <PatchDeleteButton selectedIds={selectedIds}/>
-        <input
-          type="text"
-          value={filter}
-          onChange={handleFilterChange}
-          placeholder="筛选..."
-        />
+        <AddButton setFilter={setFilter}/>
+        <PatchDeleteButton selectedIds={selectedIds} setFilter={setFilter}/>
+        <FilterItem options={selectOptions} value={ filter} onSelectChange={handleFilterChange} />
       </div>
       <table className={styles.table}>
         <thead>
@@ -357,7 +358,7 @@ const TableComponent = () => {
               <td>{row.enableStatus}</td>
               <td>{row.createTime}</td>
               <td>{row.lastEditTime}</td>
-              <td> <div><EditButton row={row} /> <DeleteButton row={row} /></div></td>
+              <td> <div><EditButton row={row} setFilter={setFilter} /> <DeleteButton row={row} setFilter={setFilter} /></div></td>
             </tr>
           ))}
         </tbody>
