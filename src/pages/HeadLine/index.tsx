@@ -5,7 +5,7 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
 import { FilterItem, ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
-import { postRequest, postRequestJson } from '../../request/index.ts';
+import { postRequestFormData, postRequestJson } from '../../request/index.ts';
 //todo 刷新状态问题
 
 //编辑按钮
@@ -37,7 +37,7 @@ const submitForm = async () => {
     fd.append('headLineStr', headLineStr);
 
     try {
-      const requestData = await postRequest(HEADLINE_EDIT_PATH, fd);
+      const requestData = await postRequestFormData(HEADLINE_EDIT_PATH, fd);
       //提交成功toast提示并关闭弹窗
       if (requestData.data?.success) {
         showToast('提交成功');
@@ -165,7 +165,7 @@ const submitForm = async () => {
     fd.append('headLineStr', headLineStr);
 
     try {
-      const requestData = await postRequest(HEADLINE_ADD_PATH, fd);
+      const requestData = await postRequestFormData(HEADLINE_ADD_PATH, fd);
       //提交成功toast提示并关闭弹窗
       if (requestData.data?.success) {
         showToast('提交成功');
@@ -287,7 +287,7 @@ const HealineComponent = () => {
     // 定义一个异步函数来发送请求，网络请求是副作用，应该放在此处
     const fetchData = async () => {
       try {
-        const requestData = await postRequest(HEADLINE_GET_PATH, formData);
+        const requestData = await postRequestFormData(HEADLINE_GET_PATH, formData);
         setData(requestData.data); 
       } catch (error) {
         console.error('Error fetching data:', error);

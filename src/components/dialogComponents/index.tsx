@@ -18,7 +18,7 @@ export const showToast = (message) => {
 
 
 // 输入框组件
-export const InputItem = ({ title, onInputChange, value = '' }) => {
+export const InputItem = ({ title, onInputChange, value = '',placeholder="" }) => {
   return (
     <li className={styles.container}>
       <label className={styles.title}>{title}</label>
@@ -27,6 +27,7 @@ export const InputItem = ({ title, onInputChange, value = '' }) => {
         onChange={(e) => onInputChange(e.target.value)}
         className={styles.value}
         value={value} // 使用受控组件的值
+        placeholder={placeholder}
       />
     </li>
   );

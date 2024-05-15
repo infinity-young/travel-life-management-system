@@ -36,7 +36,7 @@ export function postRequestJson(path:string,data?,params?){
     );
   })
 }
-export function postRequest(path:string,data?,params?){
+export function postRequestFormData(path:string,data?,params?){
   const fullPath=BATH_PATH+path;
   return new Promise((resolve,reject)=>{
     axios.post(fullPath,data, {
