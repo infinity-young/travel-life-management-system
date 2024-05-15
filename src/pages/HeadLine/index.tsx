@@ -272,7 +272,7 @@ const PatchDeleteButton =({ selectedIds,setFilter }) => {
   );
 }
 
-const TableComponent = () => {
+const HealineComponent = () => {
   const [filter, setFilter] = useState('All');
   const [selectedIds, setSelectedIds] = useState([]);
   const [data, setData] = useState([]);
@@ -367,4 +367,4 @@ const TableComponent = () => {
   );
 };
 
-export default TableComponent;
+export default HealineComponent;
