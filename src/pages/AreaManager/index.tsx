@@ -144,12 +144,12 @@ const EditButton = ({row,getPageData}) => {
       );
 }
 const AreaManagerComponent = () => {
-    const [data, setDate] = useState([]);
+    const [data, setData] = useState([]);
     useEffect(()=>{getPageData()},[])
     const getPageData = async () => {
         const response = await getRequest(AREA_GET_PATH, {})
         if (response?.rows) {
-            setDate(response.rows);
+            setData(response.rows);
         }
     }
     if (!data) {
