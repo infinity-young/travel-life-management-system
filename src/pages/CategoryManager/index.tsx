@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CATEGORY_EDIT_PATH, CATEGORY_FIRST_LEVEL_GET_PATH, CATEGORY_GET_PATH } from '../../config/requestConfig.ts';
+import { CATEGORY_ADD_PATH, CATEGORY_EDIT_PATH, CATEGORY_FIRST_LEVEL_GET_PATH, CATEGORY_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
 import { postRequestFormData, postRequestJson } from '../../request/index.ts';
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
+import styles from './index.module.scss'
 const AddButton = ({ firstCategoryData,getCategoryData }) => {
     const defaultFormData = {
         shopCategoryName: "",
@@ -30,7 +31,7 @@ const AddButton = ({ firstCategoryData,getCategoryData }) => {
                 delete shopCategoryObj.shopCategoryImg;
                 submitFormData.append("shopCategoryStr", JSON.stringify(shopCategoryObj));
                 submitFormData.append("shopCategoryManagementAdd_shopCategoryImg", formDataRef.current.shopCategoryImg);
-                const response = await postRequestFormData(CATEGORY_EDIT_PATH, submitFormData)
+                const response = await postRequestFormData(CATEGORY_ADD_PATH, submitFormData)
                 if (response.data?.success) {
                     showToast("新增店铺类别成功")
                     toggleModal();
@@ -128,7 +129,7 @@ const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
             const submitFormData = new FormData();
             submitFormData.append('shopCategoryStr', JSON.stringify(shopCategoryObj));
             submitFormData.append('shopCategoryManagementEdit_shopCategoryImg', renderFormDataRef.current.shopCategoryImg);
-            const response = await postRequestFormData(CATEGORY_EDIT_PATH)
+            const response = await postRequestFormData(CATEGORY_EDIT_PATH,submitFormData)
             if (response.data?.success) {
                 showToast("修改店铺类别信息成功")
                 toggleModal()
@@ -232,7 +233,7 @@ const CategoryManagerComponent = () => {
     return (
         <div>
             <div><AddButton firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></div>
-            <table>
+            <table className={styles.table}>
                 <thead>
                     <tr>
                         <th>类别id</th>
@@ -253,7 +254,10 @@ const CategoryManagerComponent = () => {
                                   <td>{row.shopCategoryName}</td>
                                   <td>{row.shopCategoryDesc}</td>
                                   <td>{row?.parent?.shopCategoryId}</td>
-                                  <td>图片</td>
+                                  <td>
+                                    <img
+                                        src={row.shopCategoryImg ? IMAGE_PATH + row.shopCategoryImg : ''} />
+                                  </td>
                                   <td>{row.priority}</td>
                                   <td>{row.createTime}</td>
                                   <td>{row.lastEditTime}</td>

@@ -1,0 +1,17 @@
+.table{
+  width: 100%;
+  table-layout: fixed;
+    th,
+    td {
+      width: 10%; // 设置单元格宽度为父容器宽度的十分之一
+      background-color: rgba(228, 239, 239, 0.889);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; /* 使用省略号表示溢出的文本 */
+      img{
+        max-width: 100%;
+        height: auto;
+        display: block; /* 这将消除图片下方的空隙 */
+      }
+  }
+}
