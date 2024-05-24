@@ -4,6 +4,8 @@ import { SHOP_CATEGORY_SECOND_PATH, SHOP_DATA_PATH, SHOP_EDIT_PATH, SHOP_SEARCH_
 import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
+import styles from './index.module.scss'
+import { InputComponent } from '../../components/headComponents/index.tsx';
 //todo 待测试
 const EditButton = ({ row,shopCategory,setShopParam }) => {
     const [formData, setFormData] = useState(row)
@@ -24,7 +26,7 @@ const EditButton = ({ row,shopCategory,setShopParam }) => {
                     setShopParam((prevShopPram) => {
                         return {
                             ...prevShopPram,
-                            enableStatus: 'ALL',
+                            enableStatus: -1,
                         }
                     })
                     showToast("编辑店铺信息成功")
@@ -105,7 +107,7 @@ const ShopManagerComponent = () => {
     const [shopData, setShopData] = useState([]);
     const [shopCategory, setShopCategory] = useState([]);
     const [shopParam, setShopParam] = useState({
-        enableStatus: 'ALL',
+        enableStatus: -1,
                 page: 1,
         rows: 10,
     })
@@ -144,10 +146,10 @@ const ShopManagerComponent = () => {
 
     }
     const shopStatusOptions = [
-        { value: 'ALL', label: "全部" },
-        { value: -1, lable: "禁用" },
+        { value: -1, label: "全部" },
+        { value:2, label: "禁用" },
         { value: 1, label: "启用" },
-        {value:0,lable:"待审核"}
+        {value:0,labe:"待审核"}
     ]
     const onShopStatusChange = (e) => {
         setShopParam((prevShopParam) => {
@@ -190,15 +192,15 @@ const ShopManagerComponent = () => {
             }
         })
     }
-    const currentShopCategory=[...shopCategory,{value:"ALL",label:"全部类别"}]
+    const currentShopCategory=[...shopCategory,{value:-1,label:"全部类别"}]
     return <div>
         <div>
-        <SelectItem  options={shopStatusOptions} onSelectChange={onShopStatusChange} value="ALL" />
-        <SelectItem options={currentShopCategory} onSelectChange={onShopCategoryChange} value="ALL" />
-        <InputItem title="按商铺Id查询" onInputChange={onShopCategoryIdChange} />
-        <InputItem title="按商铺名称查询"  onInputChange={onShopNameChange} />
+            <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} />
+            <SelectItem title="店铺类别" options={currentShopCategory} onSelectChange={onShopCategoryChange} />
+            <InputComponent placeholder="按商铺Id查询" onSearch={onShopCategoryIdChange} />
+            <InputComponent placeholder="按商铺名称查询" onSearch={onShopNameChange}/>
         </div>
-        <table>
+        <table className={styles.table}>
             <thead>
                 <tr>
                     <th>商铺Id</th>
@@ -227,6 +229,7 @@ const ShopManagerComponent = () => {
                         <td>{row.priority}</td>
                         <td>{row.enableStatus }</td>
                         <td>{row.advice}</td>
+                        <td>{row.createTime}</td>
                         <td>{row.lastEditTime}</td>
                         <td><EditButton row={row} shopCategory={shopCategory} setShopParam={setShopParam} /></td>
                     </tr>

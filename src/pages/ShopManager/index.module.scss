@@ -1,0 +1,15 @@
+.contaner{
+    width: 100%;
+}
+.table {
+    width: 100%; // 确保表格填满父容器
+    table-layout: fixed;
+    th,
+    td {
+      width: 8%; // 设置单元格宽度为父容器宽度的二十分之一
+      background-color: rgba(228, 239, 239, 0.889);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; /* 使用省略号表示溢出的文本 */
+  }
+}

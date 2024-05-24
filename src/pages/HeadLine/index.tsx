@@ -42,7 +42,7 @@ const submitForm = async () => {
       if (requestData.data?.success) {
         showToast('提交成功');
          //刷新逻辑
-         setFilter('ALL')
+         setFilter(-1)
         toggleModal()
       } else {
         //提交失败
@@ -170,7 +170,7 @@ const submitForm = async () => {
       if (requestData.data?.success) {
         showToast('提交成功');
         //  重新请求
-        setFilter('ALL')
+        setFilter(-1)
         toggleModal()
       } else {
         //提交失败
@@ -273,7 +273,7 @@ const PatchDeleteButton =({ selectedIds,setFilter }) => {
 }
 
 const HealineComponent = () => {
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState(-1);
   const [selectedIds, setSelectedIds] = useState([]);
   const [data, setData] = useState([]);
   //以formdata的形式提交数据
@@ -311,7 +311,7 @@ const HealineComponent = () => {
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
   };
-  const selectOptions = [{ value: 'ALL', label: "全部" }, { value: 1,label:"启用"},{value:0,label:"禁用"}]
+  const selectOptions = [{ value: -1, label: "全部" }, { value: 1,label:"启用"},{value:0,label:"禁用"}]
   if (!data||!data.rows) {
       return <></>
   } 
