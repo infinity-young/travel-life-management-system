@@ -38,7 +38,7 @@ export const SelectItem = ({
   title,
   options,
   onSelectChange,
-  value = 0
+  value = -1
 }) => {
   return (
     <li className={styles.container}>

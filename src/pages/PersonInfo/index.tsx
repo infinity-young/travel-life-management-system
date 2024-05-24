@@ -6,7 +6,7 @@ import { InputItem, SelectItem, showToast } from '../../components/dialogCompone
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
 import { InputComponent } from '../../components/headComponents/index.tsx';
-const EditButton = ({ row }) => {
+const EditButton = ({ row,setSearchParams }) => {
     const [formData, setFormData] = useState(row);
     const formDataRef = useRef(formData)
     useEffect(() => {
@@ -21,7 +21,9 @@ const EditButton = ({ row }) => {
                 formData.append("enableStatus", formDataRef.current.enableStatus);
                 const response = await postRequestFormData(PERSON_INFO_EDIT, formData);
                 if (response.data?.success) {
-                    //to do 请求接口
+                    setSearchParams((prevSearchParams) => {
+                        return{...prevSearchParams, enableStatus: -1,}
+                    })
                     showToast("修改账号信息成功");
                     toggleModal();
                 } else {
@@ -72,16 +74,18 @@ const EditButton = ({ row }) => {
 //form 用户名 账号状态
 const PersonInfoComponent = () => {
     const [data, setData] = useState([]);
+    const defaultParams = {
+        enableStatus: -1,
+        page: 1,
+        rows: 10,
+        name:''
+    }
+    const [searchParams,setSearchParams]=useState(defaultParams)
     useEffect(() => { 
         getPersonData();
-    }, []);
+    }, [searchParams]);
     const getPersonData = async () => {
-        const params = {
-            enableStatus: -1,
-            page: 1,
-            rows:10
-        }
-        const response = await postRequestJson(PERSON_INFO_GET, {}, params);
+        const response = await postRequestJson(PERSON_INFO_GET, {}, searchParams);
         if (response.data?.rows) {
             setData(response.data?.rows);
         }
@@ -105,20 +109,21 @@ const PersonInfoComponent = () => {
         {value:-1,label:"全部"}
     ];
     const onOptionSelectChange = (e) => {
-        //
+        setSearchParams((prevSearchParams) => {
+            return{...prevSearchParams,enableStatus:e}
+        })
     }
-    const onUserNameSearch = () => {
-        //
-    }
-    if (data.length <= 0) {
-        return <></>
+    const onUserNameSearch = (e) => {
+        setSearchParams((prevSearchParams) => {
+            return{...prevSearchParams,name:encodeURIComponent(e)}
+        })
     }
     return <div>
         <div>
-            <SelectItem title="状态" options={userStatuOptions} onSelectChange={onOptionSelectChange} />
-            <InputComponent  placeholder="用户名" onSearch={onUserNameSearch}/>
+            <SelectItem title="状态" options={userStatuOptions} onSelectChange={onOptionSelectChange} value={searchParams.enableStatus} />
+            <InputComponent title="用户名搜索" placeholder="用户名" onSearch={onUserNameSearch}/>
         </div>
-        <table className={styles.table}>
+       {data.length>0&& <table className={styles.table}>
             <thead>
                 <tr>
                     <th>账号Id</th>
@@ -146,12 +151,12 @@ const PersonInfoComponent = () => {
                             <td>{row.createTime}</td>
                             <td>{row.lastEditTime}</td>
                             <td>{ statusType[row.enableStatus]}</td>
-                            <td><EditButton row={row} /></td>
+                            <td><EditButton row={row} setSearchParams={setSearchParams} /></td>
                         </tr>
                     ))
                 }
             </tbody>
-        </table>
+        </table>}
     </div>
 }
 export default PersonInfoComponent;
