@@ -1,0 +1,25 @@
+.container{
+  display: 'flex'
+}
+.leftContainer{
+  padding: 10px;
+  width: '15%';
+  height:'100%';
+  background: #f0f0f0
+}
+.leftListContainer{
+  listStyleType: 'none';
+   padding: 0
+}
+.pageContainer{
+  width: '85%';
+   padding: '10px'
+}
+.welcome {
+  font-size: 24px; 
+  color: #d74ed7; 
+  text-align: center; 
+  margin-top: 50px; 
+  font-family: 'Arial', sans-serif; 
+  text-shadow: 2px 2px #3498DB; 
+}

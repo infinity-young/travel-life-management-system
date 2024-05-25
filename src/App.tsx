@@ -7,10 +7,11 @@ import AreaManagerComponent from './pages/AreaManager/index.tsx';
 import CategoryManagerComponent from './pages/CategoryManager/index.tsx';
 import PersonInfoComponent from './pages/PersonInfo/index.tsx';
 import ShopManagerComponent from './pages/ShopManager/index.tsx';
+import styles from './index.module.scss';
 
 
 // 假设我们有几个要跳转的页面组件
-const Home = () => <div>首页内容</div>;
+const Home = () => <div className={styles.welcome}> 欢迎来到管理员系统</div>;
 const HealinePage = () => <div>{ HealineComponent()}</div>;
 const AreaManagerPage = () => <div>{AreaManagerComponent()}</div>;
 const CategoryManagerPage = () => <div>{CategoryManagerComponent()}</div>
@@ -23,9 +24,9 @@ function App() {
       <div style={{ display: 'flex' }}>
       <ToastContainer />
         {/* 侧边栏，始终显示 */}
-        <div style={{ padding: '10px', width: '15%',height:'100%', background: '#f0f0f0' }}>
+        <div className={styles.leftContainer}>
           <h2>导航菜单</h2>
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
+          <ul className={styles.leftListContainer}>
             <li><Link to="/">首页</Link></li>
             <li><Link to="/headline">头条管理</Link></li>
             <li><Link to="/category">类别管理</Link></li>
