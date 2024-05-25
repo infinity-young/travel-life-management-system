@@ -118,7 +118,8 @@ const PersonInfoComponent = () => {
             return{...prevSearchParams,name:encodeURIComponent(e)}
         })
     }
-    return <div>
+    return(
+        <div>
         <div>
             <SelectItem title="状态" options={userStatuOptions} onSelectChange={onOptionSelectChange} value={searchParams.enableStatus} />
             <InputComponent title="用户名搜索" placeholder="用户名" onSearch={onUserNameSearch}/>
@@ -158,5 +159,6 @@ const PersonInfoComponent = () => {
             </tbody>
         </table>}
     </div>
+   )
 }
 export default PersonInfoComponent;

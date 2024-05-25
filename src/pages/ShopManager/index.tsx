@@ -6,7 +6,6 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
 import { InputComponent } from '../../components/headComponents/index.tsx';
-//todo 待测试
 const EditButton = ({ row,shopCategory,setShopParam }) => {
     const [formData, setFormData] = useState(row)
     const renderFormDataRef = useRef(formData);
@@ -108,13 +107,16 @@ const ShopManagerComponent = () => {
     const [shopCategory, setShopCategory] = useState([]);
     const [shopParam, setShopParam] = useState({
         enableStatus: -1,
-                page: 1,
+        page: 1,
         rows: 10,
+        shopCategoryId:null
     })
     useEffect(() => {
-        getShopData();
         getShopCategoryData();
-    },[])
+    }, [])
+    useEffect(() => {
+        getShopData();
+    },[shopParam])
     const getShopData = async () => {
         try {
             const response = await postRequestJson(SHOP_DATA_PATH,{},shopParam)
@@ -149,7 +151,7 @@ const ShopManagerComponent = () => {
         { value: -1, label: "全部" },
         { value:2, label: "禁用" },
         { value: 1, label: "启用" },
-        {value:0,labe:"待审核"}
+        {value:0,  label:"待审核"}
     ]
     const onShopStatusChange = (e) => {
         setShopParam((prevShopParam) => {
@@ -167,17 +169,16 @@ const ShopManagerComponent = () => {
             }
         })
     }
-    const onShopCategoryIdChange = (e) => {
-        const shopParam = {
-            page: 1,
-            rows: 10,
-            shopId:e
-        }
+    const onShopCategoryIdChange = async (e) => {
         try {
-            const response = postRequestJson(SHOP_SEARCH_BY_ID_PATH, {}, shopParam)
+            const shopCategoryParams = {
+                shopId:e
+            }
+            const response = await postRequestJson(SHOP_SEARCH_BY_ID_PATH, {}, shopCategoryParams)
             if (response.data?.rows) {
                 setShopData(response.data?.rows);
-            } else {
+            }
+            else {
                 showToast("店铺查询失败")
             }
         } catch {
@@ -195,8 +196,8 @@ const ShopManagerComponent = () => {
     const currentShopCategory=[...shopCategory,{value:-1,label:"全部类别"}]
     return <div>
         <div>
-            <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} />
-            <SelectItem title="店铺类别" options={currentShopCategory} onSelectChange={onShopCategoryChange} />
+            <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} value={shopParam.enableStatus} />
+            <SelectItem title="店铺类别" options={currentShopCategory} onSelectChange={onShopCategoryChange} value={shopParam.shopCategoryId} />
             <InputComponent placeholder="按商铺Id查询" onSearch={onShopCategoryIdChange} />
             <InputComponent placeholder="按商铺名称查询" onSearch={onShopNameChange}/>
         </div>
