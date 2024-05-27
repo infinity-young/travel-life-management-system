@@ -11,7 +11,7 @@ import styles from './index.module.scss';
 
 
 // 假设我们有几个要跳转的页面组件
-const Home = () => <div className={styles.welcome}> 欢迎来到管理员系统</div>;
+const Home = () => <div className={styles.welcome}> 欢迎来到Travel Life 管理员系统</div>;
 const HealinePage = () => <div>{ HealineComponent()}</div>;
 const AreaManagerPage = () => <div>{AreaManagerComponent()}</div>;
 const CategoryManagerPage = () => <div>{CategoryManagerComponent()}</div>

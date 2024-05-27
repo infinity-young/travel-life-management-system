@@ -3,10 +3,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
-import { FilterItem, ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
+import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
+import {FilterComponent} from '../../components/headComponents/index.tsx'
 import { validateForm } from '../../utils/formUtil.ts';
 import { postRequestFormData, postRequestJson } from '../../request/index.ts';
-//todo 刷新状态问题
+import { formatDate } from '../../utils/dateUtil.ts';
 
 //编辑按钮
 const EditButton = ({row,setFilter}) => {
@@ -97,7 +98,7 @@ const submitForm = async () => {
   }
   return (
     <>
-      <button onClick={toggleModal}>编辑</button>
+      <button onClick={toggleModal} className={styles.button}>编辑</button>
       {renderModal(
         <div className={styles.dialogContainer}>
            <p>头条编辑</p>
@@ -131,7 +132,7 @@ const DeleteButton = ({row,setFilter}) => {
 
   return (
     <div>
-      <button onClick={openDeleteModal}>删除</button>
+      <button onClick={openDeleteModal} className={styles.button}>删除</button>
       <ConfirmDeleteModal onConfirm={handleDelete} />
     </div>
   );
@@ -225,8 +226,8 @@ const submitForm = async () => {
     });
   }
   return (
-    <>
-      <button onClick={toggleModal}>新增头条</button>
+    <div>
+      <button onClick={toggleModal} className={styles.button}>新增头条</button>
       {renderModal(
         <div className={styles.dialogContainer}>
            <p>新增头条</p>
@@ -237,7 +238,7 @@ const submitForm = async () => {
           <SelectItem title="状态" options={selectOptions} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
         </div>
       )}
-    </>
+    </div>
   );
 }
 //批量删除按钮 
@@ -266,7 +267,7 @@ const PatchDeleteButton =({ selectedIds,setFilter }) => {
 
   return (
     <div>
-      <button onClick={openDeleteModal}>批量删除头条</button>
+      <button onClick={openDeleteModal} className={styles.button}>批量删除头条</button>
       <ConfirmDeleteModal onConfirm={handleDelete} />
     </div>
   );
@@ -317,12 +318,13 @@ const HealineComponent = () => {
   } 
   return (
     <div>
+      <h1  className={styles.pageTitle}>头条管理</h1>
       <div className={styles.headContainer}>
         <AddButton setFilter={setFilter}/>
         <PatchDeleteButton selectedIds={selectedIds} setFilter={setFilter}/>
-        <FilterItem options={selectOptions} value={ filter} onSelectChange={handleFilterChange} />
+        <FilterComponent options={selectOptions} value={ filter} onSelectChange={handleFilterChange}  />
       </div>
-      <table className={styles.table}>
+      {data.rows.length>0&&<table className={styles.table}>
         <thead>
           <tr>
             <th>选择</th>
@@ -356,13 +358,14 @@ const HealineComponent = () => {
               </td>              
               <td>{row.priority}</td>
               <td>{row.enableStatus}</td>
-              <td>{row.createTime}</td>
-              <td>{row.lastEditTime}</td>
-              <td> <div><EditButton row={row} setFilter={setFilter} /> <DeleteButton row={row} setFilter={setFilter} /></div></td>
+              <td>{formatDate(row.createTime)}</td>
+              <td>{formatDate(row.lastEditTime)}</td>
+              <td> <div className={styles.tableButtonContainer}><EditButton row={row} setFilter={setFilter} /> <DeleteButton row={row} setFilter={setFilter} /></div></td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>}
+      {data.rows.length<=0&&<div className={styles.noneContent}>筛选结果为空，请切换筛选条件</div>}
     </div>
   );
 };

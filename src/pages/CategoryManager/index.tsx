@@ -5,6 +5,7 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
+import { formatDate } from '../../utils/dateUtil.ts';
 const AddButton = ({ firstCategoryData,getCategoryData }) => {
     const defaultFormData = {
         shopCategoryName: "",
@@ -259,8 +260,8 @@ const CategoryManagerComponent = () => {
                                         src={row.shopCategoryImg ? IMAGE_PATH + row.shopCategoryImg : ''} />
                                   </td>
                                   <td>{row.priority}</td>
-                                  <td>{row.createTime}</td>
-                                  <td>{row.lastEditTime}</td>
+                                  <td>{formatDate(row.createTime)}</td>
+                                  <td>{formatDate(row.lastEditTime)}</td>
                                 <td><EditButton row={row} firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></td>
                               </tr>
                       ))}

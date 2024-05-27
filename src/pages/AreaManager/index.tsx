@@ -5,6 +5,7 @@ import styles from './index.module.scss'
 import { InputItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
+import { formatDate } from '../../utils/dateUtil.ts';
 //新增区域信息按钮
 const AddButton = ({getPageData}) => {
     const defaultFormData = {
@@ -177,8 +178,8 @@ const AreaManagerComponent = () => {
                                 <td>{row.areaId}</td>
                                 <td>{row.areaName}</td>
                                 <td>{row.priority}</td>
-                                <td>{row.createTime}</td>
-                                <td>{row.lastEditTime}</td>
+                                <td>{formatDate(row.createTime)}</td>
+                                <td>{formatDate(row.lastEditTime)}</td>
                                 <td><EditButton row={row} getPageData={getPageData} /></td>
                         </tr>
                         ))}

@@ -6,6 +6,7 @@ import { InputItem, SelectItem, showToast } from '../../components/dialogCompone
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
 import { InputComponent } from '../../components/headComponents/index.tsx';
+import { formatDate } from '../../utils/dateUtil.ts';
 const EditButton = ({ row,setSearchParams }) => {
     const [formData, setFormData] = useState(row);
     const formDataRef = useRef(formData)
@@ -149,8 +150,8 @@ const PersonInfoComponent = () => {
                             <td>{row.email}</td>
                             <td><img src={IMAGE_PATH + row.profileImg} /></td>
                             <td>{personType[row.userType] }</td>
-                            <td>{row.createTime}</td>
-                            <td>{row.lastEditTime}</td>
+                            <td>{formatDate(row.createTime)}</td>
+                            <td>{formatDate(row.lastEditTime)}</td>
                             <td>{ statusType[row.enableStatus]}</td>
                             <td><EditButton row={row} setSearchParams={setSearchParams} /></td>
                         </tr>

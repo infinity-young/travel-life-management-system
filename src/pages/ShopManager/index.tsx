@@ -6,6 +6,7 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
 import { InputComponent } from '../../components/headComponents/index.tsx';
+import { formatDate } from '../../utils/dateUtil.ts';
 const EditButton = ({ row,shopCategory,setShopParam }) => {
     const [formData, setFormData] = useState(row)
     const renderFormDataRef = useRef(formData);
@@ -230,8 +231,8 @@ const ShopManagerComponent = () => {
                         <td>{row.priority}</td>
                         <td>{row.enableStatus }</td>
                         <td>{row.advice}</td>
-                        <td>{row.createTime}</td>
-                        <td>{row.lastEditTime}</td>
+                        <td>{formatDate(row.createTime)}</td>
+                        <td>{formatDate(row.lastEditTime)}</td>
                         <td><EditButton row={row} shopCategory={shopCategory} setShopParam={setShopParam} /></td>
                     </tr>
                 ))}

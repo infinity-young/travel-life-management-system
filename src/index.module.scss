@@ -1,5 +1,7 @@
 .container{
-  display: 'flex'
+  display: 'flex';
+  flex-direction: column;
+  background-color: #d74ed7;
 }
 .leftContainer{
   padding: 10px;
