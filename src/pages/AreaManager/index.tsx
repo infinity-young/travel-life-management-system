@@ -61,7 +61,7 @@ const AddButton = ({getPageData}) => {
     }
   return (
         <>
-          <button onClick={toggleModal}>添加新区域</button>
+          <button onClick={toggleModal} className={styles.button}>添加新区域</button>
           {renderModal(
             <div className={styles.dialogContainer}>
                <p>新增区域信息</p>
@@ -133,7 +133,7 @@ const EditButton = ({row,getPageData}) => {
     }
   return (
         <>
-          <button onClick={toggleModal}>编辑</button>
+          <button onClick={toggleModal} className={styles.button}>编辑</button>
           {renderModal(
             <div className={styles.dialogContainer}>
                <p>编辑区域信息</p>
@@ -157,7 +157,8 @@ const AreaManagerComponent = () => {
         return <></>
     } else {
         return (
-            <div className={styles.container}>
+          <div className={styles.container}>
+             <h1  className={styles.pageTitle}>区域管理</h1>
                 <div>
                     <AddButton getPageData={getPageData} />
                 </div>
