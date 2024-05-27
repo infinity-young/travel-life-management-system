@@ -14,6 +14,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; /* 使用省略号表示溢出的文本 */
+      text-align: center; /* 水平居中 */
+      vertical-align: middle; /* 垂直居中 */
   }
   img{
     height: 100%;

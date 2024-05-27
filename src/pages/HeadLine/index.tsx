@@ -312,7 +312,11 @@ const HealineComponent = () => {
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
   };
-  const selectOptions = [{ value: -1, label: "全部" }, { value: 1,label:"启用"},{value:0,label:"禁用"}]
+  const selectOptions = [{ value: -1, label: "全部" }, { value: 1, label: "启用" }, { value: 0, label: "禁用" }]
+  const headLineType = {
+    0:'禁用',
+    1: '启用'
+  }
   if (!data||!data.rows) {
       return <></>
   } 
@@ -357,7 +361,7 @@ const HealineComponent = () => {
         />
               </td>              
               <td>{row.priority}</td>
-              <td>{row.enableStatus}</td>
+              <td>{headLineType[row.enableStatus]}</td>
               <td>{formatDate(row.createTime)}</td>
               <td>{formatDate(row.lastEditTime)}</td>
               <td> <div className={styles.tableButtonContainer}><EditButton row={row} setFilter={setFilter} /> <DeleteButton row={row} setFilter={setFilter} /></div></td>
