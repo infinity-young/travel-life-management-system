@@ -5,7 +5,7 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
-import { InputComponent } from '../../components/headComponents/index.tsx';
+import { FilterComponent, InputComponent } from '../../components/headComponents/index.tsx';
 import { formatDate } from '../../utils/dateUtil.ts';
 const EditButton = ({ row,setSearchParams }) => {
     const [formData, setFormData] = useState(row);
@@ -59,7 +59,7 @@ const EditButton = ({ row,setSearchParams }) => {
     ];
     return(
        <div>
-            <button onClick={toggleModal}>编辑</button>
+            <button onClick={toggleModal} className={styles.button}>编辑</button>
             {
                 renderModal(
                     <div>
@@ -75,10 +75,11 @@ const EditButton = ({ row,setSearchParams }) => {
 //form 用户名 账号状态
 const PersonInfoComponent = () => {
     const [data, setData] = useState([]);
+    const [pageSetting,setPageSetting]=useState({isShowPrevPage:false,isShowNextPage:false,total:5})
     const defaultParams = {
         enableStatus: -1,
         page: 1,
-        rows: 10,
+        rows: 2,
         name:''
     }
     const [searchParams,setSearchParams]=useState(defaultParams)
@@ -89,6 +90,14 @@ const PersonInfoComponent = () => {
         const response = await postRequestJson(PERSON_INFO_GET, {}, searchParams);
         if (response.data?.rows) {
             setData(response.data?.rows);
+        }
+        if (response.data.total) {
+            setPageSetting((prevPageSetting) => {
+                return {
+                    ...prevPageSetting,
+                    total: response.data.total,
+                    isShowNextPage:response.data.total>searchParams.rows*searchParams.page
+            }})
         }
     }
     const personType = {
@@ -119,11 +128,61 @@ const PersonInfoComponent = () => {
             return{...prevSearchParams,name:encodeURIComponent(e)}
         })
     }
+    const pageFilterOptions = [
+        { value: 2, label: 2 },
+        {value:4,label:4}
+    ]
+    const handleFilterChange = (e) => {
+        const currentSearchParams = {
+            ...defaultParams,
+            rows:e
+        }
+        setSearchParams(currentSearchParams);
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowPrevPage: false,
+                isShowNextPage:e<pageSetting.total
+            }
+        })
+
+    }
+    const handlePrevPage = () => {
+        setSearchParams((prevSearchParams) => {
+            return {
+                ...prevSearchParams,
+                page:prevSearchParams.page-1
+            }
+        });
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowPrevPage: searchParams.page > 2,
+                isShowNextPage:true
+            }
+        })
+    }
+    const handleNextPage = () => {
+        setSearchParams((prevSearchParams) => {
+            return {
+                ...prevSearchParams,
+                page:prevSearchParams.page+1
+            }
+        });
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowNextPage: searchParams.rows * (searchParams.page + 1) < pageSetting.total,
+                isShowPrevPage:true
+            }
+        })
+    }
     return(
         <div>
-        <div>
-            <SelectItem title="状态" options={userStatuOptions} onSelectChange={onOptionSelectChange} value={searchParams.enableStatus} />
-            <InputComponent title="用户名搜索" placeholder="用户名" onSearch={onUserNameSearch}/>
+            <h1  className={styles.pageTitle}>账号管理</h1>
+        <div className={styles.headButtonContainer}>
+            <FilterComponent options={userStatuOptions} onSelectChange={onOptionSelectChange} value={searchParams.enableStatus} />
+            <InputComponent  placeholder="用户名" onSearch={onUserNameSearch}/>
         </div>
        {data.length>0&& <table className={styles.table}>
             <thead>
@@ -158,7 +217,14 @@ const PersonInfoComponent = () => {
                     ))
                 }
             </tbody>
-        </table>}
+            </table>}
+            <div className={styles.bottomContainer}>
+                <FilterComponent options={pageFilterOptions} value={ searchParams.rows} onSelectChange={handleFilterChange}  />
+                {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span id="pageInfo"></span>}
+                {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
+            </div>
+            
     </div>
    )
 }

@@ -285,7 +285,7 @@ const CategoryManagerComponent = () => {
             }
         })
         //重新划分渲染数据
-        const currentData = netData.slice((pageSetting.pageIndex-1)*pageSetting.pageItem,(pageSetting.pageIndex)*pageSetting.pageItem );
+        const currentData = netData.slice((pageSetting.pageIndex - 2) * pageSetting.pageItem, (pageSetting.pageIndex-1) * pageSetting.pageItem);
         setData(currentData)
     }
     if (!data||data.length<=0) {
