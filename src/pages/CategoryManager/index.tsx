@@ -6,6 +6,7 @@ import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../compone
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
 import { formatDate } from '../../utils/dateUtil.ts';
+import { FilterComponent } from '../../components/headComponents/index.tsx';
 const AddButton = ({ firstCategoryData,getCategoryData }) => {
     const defaultFormData = {
         shopCategoryName: "",
@@ -96,7 +97,7 @@ const AddButton = ({ firstCategoryData,getCategoryData }) => {
     }
     const { renderModal, toggleModal } = useModal(submitForm, resetForm);
     return <div>
-        <button onClick={toggleModal}>新增店铺类别</button>
+        <button onClick={toggleModal} className={styles.button}>新增店铺类别</button>
         {
             renderModal((
                 <div>
@@ -189,7 +190,7 @@ const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
     
     const { renderModal, toggleModal } = useModal(submitForm);
     return <div>
-        <button onClick={toggleModal}>编辑</button>
+        <button onClick={toggleModal} className={styles.button}>编辑</button>
         {
             renderModal(<div>
                 <div>店铺类别编辑</div>
@@ -205,11 +206,24 @@ const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
 }
 const CategoryManagerComponent = () => {
     const [data, setData] = useState([]);
+    const [netData, setNetData] = useState([]);
     const [firstCategoryData, setFirstCategoryData] = useState([]);
+    const [pageSetting, setPageSetting] = useState({ pageIndex: 1, pageItem: 5, totalItems:5,isShowNextPage:false,isShowPrevPage:false });
     const getCategoryData = async () => {
         const response = await postRequestJson(CATEGORY_GET_PATH)
         if (response.data?.rows) {
-            setData(response.data?.rows);
+            setNetData(response.data.rows);
+            setData(response.data.rows.slice(0,pageSetting.pageItem));
+
+        }
+        if (response.data?.total) {
+            setPageSetting((prevPageSetting) => {
+                return {
+                    ...prevPageSetting,
+                    totalItems: response.data?.total,
+                    isShowNextPage:response.data?.total>prevPageSetting.pageIndex*prevPageSetting.pageItem
+                }
+            })
         }
     }
     const getFirtCategory = async () => {
@@ -228,11 +242,58 @@ const CategoryManagerComponent = () => {
         getCategoryData();
         getFirtCategory();
     }, []);
+
+    const handleFilterChange = (e) => {
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                pageIndex:1,
+                pageItem: e,
+                isShowNextPage:prevPageSetting.totalItems>e,
+                isShowPrevPage:false
+            }
+        })
+        //重新划分渲染数据
+        const currentData = netData.slice(0, e);
+        setData(currentData)
+        
+    }
+    const pageFilterOptions = [
+        { value: 5, label: 5 },
+        {value:10,label:10}
+    ]
+    const handleNextPage = () => {
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                pageIndex:prevPageSetting.pageIndex+1,
+                isShowNextPage:prevPageSetting.totalItems>(prevPageSetting.pageIndex+1)*prevPageSetting.pageItem,
+                isShowPrevPage:true
+            }
+        })
+        //重新划分渲染数据
+        const currentData = netData.slice((pageSetting.pageIndex)*pageSetting.pageItem,(pageSetting.pageIndex+1)*pageSetting.pageItem );
+        setData(currentData)
+    }
+    const handlePrevPage = () => {
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                pageIndex:prevPageSetting.pageIndex-1,
+                isShowNextPage:true,
+                isShowPrevPage:prevPageSetting.pageIndex-1>1
+            }
+        })
+        //重新划分渲染数据
+        const currentData = netData.slice((pageSetting.pageIndex-1)*pageSetting.pageItem,(pageSetting.pageIndex)*pageSetting.pageItem );
+        setData(currentData)
+    }
     if (!data||data.length<=0) {
         return <></>
     }
     return (
         <div>
+             <h1  className={styles.pageTitle}>类别管理</h1>
             <div><AddButton firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></div>
             <table className={styles.table}>
                 <thead>
@@ -265,9 +326,14 @@ const CategoryManagerComponent = () => {
                                 <td><EditButton row={row} firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></td>
                               </tr>
                       ))}
-                </tbody>
-                
+                </tbody>   
             </table>
+            <div className={styles.bottomContainer}>
+                <FilterComponent options={pageFilterOptions} value={ pageSetting.pageItem} onSelectChange={handleFilterChange}  />
+                {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span id="pageInfo"></span>}
+                {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
+            </div>
         </div>
     )
 

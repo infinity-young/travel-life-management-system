@@ -1,17 +1,51 @@
+.pageTitle {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 2em;
+}
 .table{
   width: 100%;
   table-layout: fixed;
+  margin-top: 10px;
+  margin-bottom: 10px;
     th,
     td {
+      
       width: 10%; // 设置单元格宽度为父容器宽度的十分之一
       background-color: rgba(228, 239, 239, 0.889);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; /* 使用省略号表示溢出的文本 */
+      text-align: center; /* 水平居中 */
+      vertical-align: middle; /* 垂直居中 */
       img{
         max-width: 100%;
         height: auto;
         display: block; /* 这将消除图片下方的空隙 */
       }
   }
+}
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.bottomContainer{
+  display: flex;
+  flex-direction: 'row';
 }
