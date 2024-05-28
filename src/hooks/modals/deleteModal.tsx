@@ -23,8 +23,8 @@ const useConfirmDelete = () => {
         <div className={styles.modalContent}>
           <p>确定要永久删除该数据吗？</p>
             <div className={styles.buttonContainer}>
-                <button onClick={() => { onConfirm(); closeDeleteModal(); }}>确认</button>
-                <button onClick={closeDeleteModal}>再想想</button>
+                <button onClick={() => { onConfirm(); closeDeleteModal(); }} className={styles.button}>确认</button>
+                <button onClick={closeDeleteModal} className={styles.button}>再想想</button>
           </div>
         </div>
       </div>

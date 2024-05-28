@@ -5,15 +5,16 @@ import styles from './index.module.scss'
 // 弹窗UI组件
 const Modal = ({ isVisible, onClose,onSubmit,onReset, children }) => {
   if (!isVisible) return null;
+  console.log("=====onReset====",onReset)
 
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>
         {children}
         <div className={styles.buttonContainer}>
-          {onClose && <button onClick={onClose}>关闭</button>} 
-          {onSubmit&& <button onClick={onSubmit}>提交</button>}
-         {onReset&& <button onClick={onReset}>重置</button>}
+          {onClose && <button onClick={onClose} className={styles.button}>关闭</button>} 
+          {onSubmit&& <button onClick={onSubmit} className={styles.button}>提交</button>}
+         {onReset&& <button onClick={onReset} className={styles.button}>重置</button>}
        </div>
       </div>
     </div>

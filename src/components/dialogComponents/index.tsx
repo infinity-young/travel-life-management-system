@@ -25,7 +25,7 @@ export const InputItem = ({ title, onInputChange, value = '',placeholder="" }) =
       <input
         type="text"
         onChange={(e) => onInputChange(e.target.value)}
-        className={styles.value}
+        className={styles.box}
         value={value} // 使用受控组件的值
         placeholder={placeholder}
       />
@@ -45,7 +45,7 @@ export const SelectItem = ({
       <label className={styles.title}>{title}</label>
       <select
         onChange={(e) => onSelectChange(e.target.value)}
-        className={styles.value}
+        className={styles.box}
         value={value} // 使用受控组件的值
       >
         {options.map((option, index) => (

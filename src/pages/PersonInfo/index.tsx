@@ -102,7 +102,7 @@ const PersonInfoComponent = () => {
     }
     const personType = {
         1: "顾客",
-        2: "店家",
+        2: "商家",
         3:"管理员"
     }
     const statusType = {

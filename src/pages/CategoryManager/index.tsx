@@ -315,7 +315,7 @@ const CategoryManagerComponent = () => {
                                   <td>{row.shopCategoryId}</td>
                                   <td>{row.shopCategoryName}</td>
                                   <td>{row.shopCategoryDesc}</td>
-                                  <td>{row?.parent?.shopCategoryId}</td>
+                                  <td>{row?.parent?.shopCategoryName}</td>
                                   <td>
                                     <img
                                         src={row.shopCategoryImg ? IMAGE_PATH + row.shopCategoryImg : ''} />
