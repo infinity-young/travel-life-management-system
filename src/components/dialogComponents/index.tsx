@@ -70,7 +70,7 @@ export const ImageUploadItem = ({
         type="file"
         accept="image/*"
         onChange={(e) => onImageUpload(e.target.files[0])}
-        className={styles.value}
+        className={styles.box}
       />
     </li>
   );

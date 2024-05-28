@@ -235,7 +235,7 @@ const submitForm = async () => {
           <InputItem title="头条链接" onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
           <ImageUploadItem title="头条图片" onImageUpload={handleImageUpload}  />
           <InputItem title="优先级" onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
-          <SelectItem title="状态" options={selectOptions} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
+          <SelectItem title="状态" options={selectOptions} value={renderFormData.enableStatus} onSelectChange={handleSelectChange} />
         </div>
       )}
     </div>

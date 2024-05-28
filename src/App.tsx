@@ -32,7 +32,7 @@ function App() {
             <li><Link to="/category">类别管理</Link></li>
             <li><Link to="/area">区域管理</Link></li>
             <li><Link to="/person">账号管理</Link></li>
-            <li><Link to="/page3">商铺管理</Link></li>
+            <li><Link to="/page3">店铺管理</Link></li>
           </ul>
         </div>
 

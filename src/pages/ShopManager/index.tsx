@@ -91,12 +91,12 @@ const EditButton = ({ row,shopCategory,setShopParam }) => {
         {
             renderModal(
                 <div>
-                    <div>商铺类别编辑</div>
-                    <InputItem title="商铺名" value={formData.shopName} onInputChange={onShopNameChange} />
+                    <div>店铺类别编辑</div>
+                    <InputItem title="店铺名" value={formData.shopName} onInputChange={onShopNameChange} />
                     <SelectItem title="店铺类别" options={shopCategory} onSelectChange={onShopCategoryChange} value={formData.shopCategory.shopCategoryId} />
                     <InputItem title="优先级" value={formData.priority} onInputChange={onPriorityChange} />
-                    <SelectItem title="商铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} value={formData.enableStatus} />
-                    <InputItem title="商铺建议" value={formData.advice} onInputChange={onAdviceChange} />
+                    <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} value={formData.enableStatus} />
+                    <InputItem title="店铺建议" value={formData.advice} onInputChange={onAdviceChange} />
                  </div>
             )
         }
@@ -262,27 +262,31 @@ const ShopManagerComponent = () => {
             }
         })
     }
-    const currentShopCategory=[...shopCategory,{value:-1,label:"全部类别"}]
+    const currentShopCategory = [...shopCategory, { value: -1, label: "全部类别" }]
+    const shopStatus = {
+        0: '禁用',
+        1:'启用'
+    }
     return <div>
         <h1  className={styles.pageTitle}>店铺管理</h1>
         <div className={styles.headButtonContainer}>
             <FilterComponent options={shopStatusOptions} onSelectChange={onShopStatusChange} value={shopParam.enableStatus} />
             <span className={styles.dividedSpan}></span>
             <FilterComponent  options={currentShopCategory} onSelectChange={onShopCategoryChange} value={shopParam.shopCategoryId} />
-            <InputComponent placeholder="按商铺Id查询" onSearch={onShopCategoryIdChange} />
-            <InputComponent placeholder="按商铺名称查询" onSearch={onShopNameChange}/>
+            <InputComponent placeholder="按店铺Id查询" onSearch={onShopCategoryIdChange} />
+            <InputComponent placeholder="按店铺名称查询" onSearch={onShopNameChange}/>
         </div>
         <table className={styles.table}>
             <thead>
                 <tr>
-                    <th>商铺Id</th>
-                    <th>商铺名称</th>
-                    <th>商铺描述</th>
-                    <th>商铺地址</th>
+                    <th>店铺Id</th>
+                    <th>店铺名称</th>
+                    <th>店铺描述</th>
+                    <th>店铺地址</th>
                     <th>类别Id</th>
                     <th>电话</th>
                     <th>优先级</th>
-                    <th>状态</th>
+                    <th>店铺状态</th>
                     <th>建议</th>
                     <th>创建时间</th>
                     <th>最近修改时间</th>
@@ -299,7 +303,7 @@ const ShopManagerComponent = () => {
                         <td>{row.shopCategory.shopCategoryId}</td>
                         <td>{row.phone}</td>
                         <td>{row.priority}</td>
-                        <td>{row.enableStatus }</td>
+                        <td>{shopStatus[row.enableStatus] }</td>
                         <td>{row.advice}</td>
                         <td>{formatDate(row.createTime)}</td>
                         <td>{formatDate(row.lastEditTime)}</td>
