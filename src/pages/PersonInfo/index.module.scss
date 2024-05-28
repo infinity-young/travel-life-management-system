@@ -9,7 +9,6 @@
 .headButtonContainer{
   display:flex;
   flex-direction: row;
-  align-items:'center';
 }
 .table {
     width: 100%; // 确保表格填满父容器
@@ -49,4 +48,8 @@
 .bottomContainer{
   display: flex;
   flex-direction: 'row';
+}
+.dividedSpan{
+  margin-left: 1px;
+  margin-right: 1px;
 }

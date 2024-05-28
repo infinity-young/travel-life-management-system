@@ -11,15 +11,15 @@ export const InputComponent = ({  placeholder = "", onSearch }) => {
     }
 
     return (
-      <li className={styles.container}>
+      <div className={styles.container}>
         <input
           type="text"
           onChange={(e) => onInputChange(e.target.value)}
           className={styles.inputBox}
           placeholder={placeholder}
-            />
-            <button onClick={onInputSearch} className={styles.inputBox}>搜索</button>
-      </li>
+        />
+         <button onClick={onInputSearch} className={styles.searchButton}>搜索</button>  
+      </div>
     );
 };
   

@@ -75,7 +75,7 @@ const EditButton = ({ row,setSearchParams }) => {
 //form 用户名 账号状态
 const PersonInfoComponent = () => {
     const [data, setData] = useState([]);
-    const [pageSetting,setPageSetting]=useState({isShowPrevPage:false,isShowNextPage:false,total:5})
+    const [pageSetting,setPageSetting]=useState({isShowPrevPage:false,isShowNextPage:false,total:0})
     const defaultParams = {
         enableStatus: -1,
         page: 1,
@@ -219,9 +219,10 @@ const PersonInfoComponent = () => {
             </tbody>
             </table>}
             <div className={styles.bottomContainer}>
-                <FilterComponent options={pageFilterOptions} value={ searchParams.rows} onSelectChange={handleFilterChange}  />
+                <FilterComponent options={pageFilterOptions} value={searchParams.rows} onSelectChange={handleFilterChange} />
+                <span className={styles.dividedSpan}></span>
                 {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
-                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span id="pageInfo"></span>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={styles.dividedSpan}></span>}
                 {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
             </div>
             

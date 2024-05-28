@@ -329,9 +329,10 @@ const CategoryManagerComponent = () => {
                 </tbody>   
             </table>
             <div className={styles.bottomContainer}>
-                <FilterComponent options={pageFilterOptions} value={ pageSetting.pageItem} onSelectChange={handleFilterChange}  />
+                <FilterComponent options={pageFilterOptions} value={pageSetting.pageItem} onSelectChange={handleFilterChange} />
+                <span className={styles.dividedSpan}></span>
                 {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
-                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span id="pageInfo"></span>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={styles.dividedSpan}></span>}
                 {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
             </div>
         </div>

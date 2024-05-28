@@ -5,7 +5,7 @@ import { InputItem, SelectItem, showToast } from '../../components/dialogCompone
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import styles from './index.module.scss'
-import { InputComponent } from '../../components/headComponents/index.tsx';
+import { FilterComponent, InputComponent } from '../../components/headComponents/index.tsx';
 import { formatDate } from '../../utils/dateUtil.ts';
 const EditButton = ({ row,shopCategory,setShopParam }) => {
     const [formData, setFormData] = useState(row)
@@ -87,7 +87,7 @@ const EditButton = ({ row,shopCategory,setShopParam }) => {
     }
 
     return <div>
-        <button onClick={toggleModal}>编辑</button>
+        <button onClick={toggleModal} className={styles.button}>编辑</button>
         {
             renderModal(
                 <div>
@@ -104,14 +104,21 @@ const EditButton = ({ row,shopCategory,setShopParam }) => {
 }
 
 const ShopManagerComponent = () => {
-    const [shopData, setShopData] = useState([]);
-    const [shopCategory, setShopCategory] = useState([]);
-    const [shopParam, setShopParam] = useState({
+    const defaultShopParams = {
         enableStatus: -1,
         page: 1,
-        rows: 10,
-        shopCategoryId:null
-    })
+        rows: 2,
+        shopCategoryId:-1
+    }
+    const defaultPageSetting = {
+        isShowPrevPage: false,
+        isShowNextPage: false,
+        total:0
+    }
+    const [shopData, setShopData] = useState([]);
+    const [shopCategory, setShopCategory] = useState([]);
+    const [pageSetting, setPageSetting] = useState(defaultPageSetting)
+    const [shopParam, setShopParam] = useState(defaultShopParams)
     useEffect(() => {
         getShopCategoryData();
     }, [])
@@ -125,6 +132,13 @@ const ShopManagerComponent = () => {
                 setShopData(response?.data?.rows);
             } else {
                 showToast("获取店铺信息失败")
+            }
+            if (response.data?.total) {
+                setPageSetting({
+                    isShowPrevPage: shopParam.page>1,
+                    isShowNextPage: shopParam.rows*shopParam.page<=response.data?.total,
+                    total:response.data?.total
+                })
             }
         } catch {
             showToast("获取店铺信息失败")
@@ -149,7 +163,7 @@ const ShopManagerComponent = () => {
 
     }
     const shopStatusOptions = [
-        { value: -1, label: "全部" },
+        { value: -1, label: "全部状态" },
         { value:2, label: "禁用" },
         { value: 1, label: "启用" },
         {value:0,  label:"待审核"}
@@ -194,11 +208,67 @@ const ShopManagerComponent = () => {
             }
         })
     }
+    const pageFilterOptions = [
+        {
+            value: 2, label: 2,
+        },
+        {
+            value: 4, label:4
+        }
+    ]
+    const handleFilterChange = (e) => {
+        setShopParam((prevShopParam) => {
+            return {
+                ...prevShopParam,
+                rows: e
+            }
+        });
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowPrevPage: false,
+                isShowNextPage:prevPageSetting.total>e
+            }
+        })
+        
+    }
+    const handlePrevPage = () => {
+        setShopParam((prevShopParam) => {
+            return {
+                ...prevShopParam,
+                page: prevShopParam.page - 1
+            }
+        })
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowNextPage: true,
+                isShowPrevPage:shopParam.page>2
+            }
+        })
+    }
+    const handleNextPage = () => {
+        setShopParam((prevShopParam) => {
+            return {
+                ...prevShopParam,
+                page:prevShopParam.page+1
+            }
+        })
+        setPageSetting((prevPageSetting) => {
+            return {
+                ...prevPageSetting,
+                isShowNextPage: prevPageSetting.total > (shopParam.page + 1) * shopParam.rows,
+                isShowPrevPage:true
+            }
+        })
+    }
     const currentShopCategory=[...shopCategory,{value:-1,label:"全部类别"}]
     return <div>
-        <div>
-            <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} value={shopParam.enableStatus} />
-            <SelectItem title="店铺类别" options={currentShopCategory} onSelectChange={onShopCategoryChange} value={shopParam.shopCategoryId} />
+        <h1  className={styles.pageTitle}>店铺管理</h1>
+        <div className={styles.headButtonContainer}>
+            <FilterComponent options={shopStatusOptions} onSelectChange={onShopStatusChange} value={shopParam.enableStatus} />
+            <span className={styles.dividedSpan}></span>
+            <FilterComponent  options={currentShopCategory} onSelectChange={onShopCategoryChange} value={shopParam.shopCategoryId} />
             <InputComponent placeholder="按商铺Id查询" onSearch={onShopCategoryIdChange} />
             <InputComponent placeholder="按商铺名称查询" onSearch={onShopNameChange}/>
         </div>
@@ -238,6 +308,13 @@ const ShopManagerComponent = () => {
                 ))}
             </tbody>
         </table>
+        <div className={styles.bottomContainer}>
+            <FilterComponent options={pageFilterOptions} value={shopParam.rows} onSelectChange={handleFilterChange} />
+            <span className={styles.dividedSpan}></span>
+                {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={styles.dividedSpan}></span>}
+                {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
+            </div>
     </div>
 }
 export default  ShopManagerComponent;
