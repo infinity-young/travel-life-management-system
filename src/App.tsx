@@ -21,7 +21,7 @@ const ShopManagerPage = () => <div>{ ShopManagerComponent()}</div>;
 function App() {
   return (
     <Router>
-      <div style={{ display: 'flex' }}>
+      <div className={styles.container}>
       <ToastContainer />
         {/* 侧边栏，始终显示 */}
         <div className={styles.leftContainer}>
@@ -37,7 +37,7 @@ function App() {
         </div>
 
         {/* 主内容区，内容会根据路由切换 */}
-        <div style={{ width: '85%', padding: '10px' }}>
+        <div className={styles.pageContainer}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/headline" element={<HealinePage />} />

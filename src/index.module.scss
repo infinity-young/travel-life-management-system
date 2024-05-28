@@ -1,7 +1,5 @@
 .container{
-  display: 'flex';
-  flex-direction: column;
-  background-color: #d74ed7;
+  display: flex;
 }
 .leftContainer{
   padding: 10px;
@@ -10,12 +8,12 @@
   background: #f0f0f0
 }
 .leftListContainer{
-  listStyleType: 'none';
+  list-style-type: none;
    padding: 0
 }
 .pageContainer{
-  width: '85%';
-   padding: '10px'
+  width: 85%;
+   padding: 10px
 }
 .welcome {
   font-size: 24px; 
