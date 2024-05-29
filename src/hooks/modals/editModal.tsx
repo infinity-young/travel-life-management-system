@@ -5,8 +5,6 @@ import styles from './index.module.scss'
 // 弹窗UI组件
 const Modal = ({ isVisible, onClose,onSubmit,onReset, children }) => {
   if (!isVisible) return null;
-  console.log("=====onReset====",onReset)
-
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>

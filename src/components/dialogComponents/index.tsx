@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 //弹窗
@@ -18,7 +18,7 @@ export const showToast = (message) => {
 
 
 // 输入框组件
-export const InputItem = ({ title, onInputChange, value = '',placeholder="" }) => {
+export const InputItem: React.FC<InputItemProps> = ({ title, onInputChange, value = '',placeholder="" }) => {
   return (
     <li className={styles.container}>
       <label className={styles.title}>{title}</label>

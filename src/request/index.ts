@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { BATH_PATH } from '../config/requestConfig.ts';
+import { ResponseData } from '../model/ResponseData.ts';
 
 
-export function getRequest(path: string, params?: Record<string, any>) {
+export function getRequest<T>(path: string, params?: Record<string, any>):Promise<ResponseData<T>> {
   const fullPath = BATH_PATH + path;
   const searchParams = new URLSearchParams(params);
   return new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ export function getRequest(path: string, params?: Record<string, any>) {
   });
 }
 
-export function postRequestJson(path:string,data?,params?){
+export function postRequestJson<T>(path:string,data?,params?):Promise<ResponseData<T>>{
   const fullPath=BATH_PATH+path;
   return new Promise((resolve,reject)=>{
     axios.post(fullPath, JSON.stringify(data), {
@@ -36,7 +37,7 @@ export function postRequestJson(path:string,data?,params?){
     );
   })
 }
-export function postRequestFormData(path:string,data?,params?){
+export function postRequestFormData<T>(path:string,data?,params?):Promise<ResponseData<T>>{
   const fullPath=BATH_PATH+path;
   return new Promise((resolve,reject)=>{
     axios.post(fullPath,data, {
