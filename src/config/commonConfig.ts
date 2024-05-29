@@ -7,6 +7,10 @@ export const statusSelectOptionsForModal =[
     { value: 1, label: "启用" },
     { value: 0, label: "禁用" }
 ]
+export const statusType = {
+    0:'禁用',
+    1: '启用'
+}
 
 export const pageFilterOptions = [
     { value: 5, label: 5 },

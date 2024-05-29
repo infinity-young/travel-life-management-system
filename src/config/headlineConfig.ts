@@ -5,7 +5,3 @@ export const headLineFormConfig = {
     priority: "优先级",
     enableStatus:"状态"
 }
-export const headLineType = {
-    0:'禁用',
-    1: '启用'
-}

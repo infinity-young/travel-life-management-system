@@ -8,8 +8,7 @@ import commonStyles from '../../styles/common.module.scss'
 import { AddButton, DeleteButton, EditButton, PatchDeleteButton } from './Button.tsx';
 import { HeadLineType } from '../../model/HeadLine.ts';
 import { HeadLineResponseType } from '../../model/HeadLineResponse.ts';
-import { statusSelectOptions } from '../../config/commonConfig.ts';
-import { headLineType } from '../../config/headlineConfig.ts';
+import { statusSelectOptions, statusType } from '../../config/commonConfig.ts';
 
 const HealineComponent = () => {
   const [filter, setFilter] = useState(-1);
@@ -96,7 +95,7 @@ const HealineComponent = () => {
               <img src={ IMAGE_PATH + row.lineImg}/>
               </td>              
               <td>{row.priority}</td>
-              <td>{headLineType[row.enableStatus]}</td>
+              <td>{statusType[row.enableStatus]}</td>
               <td>{formatDate(row.createTime)}</td>
               <td>{formatDate(row.lastEditTime)}</td>
               <td>
