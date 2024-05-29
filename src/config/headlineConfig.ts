@@ -6,6 +6,6 @@ export const headLineFormConfig = {
     enableStatus:"状态"
 }
 export const headLineType = {
-  0:'禁用',
-  1: '启用'
+    0:'禁用',
+    1: '启用'
 }

@@ -8,6 +8,7 @@ import commnStyles from '../../styles/common.module.scss'
 import { ResponseData } from '../../model/ResponseData.ts';
 import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
 import { ShopCategory } from '../../model/ShopCategory.ts';
+import { ShopCategoryFormConfig } from '../../config/shopCategoryConfig.ts';
 export const AddButton = ({ firstCategoryData, getCategoryData }) => {
     const defaultFormData = {
         shopCategoryName: "",
@@ -46,6 +47,9 @@ export const AddButton = ({ firstCategoryData, getCategoryData }) => {
             } catch {
                 showToast("新增店铺类别失败")
             }
+        } else {
+            const message = ShopCategoryFormConfig[validatedResult.unvalidatedKey]  + '是必填项';
+            showToast(message);
         }
     }
     const resetForm = () => {
@@ -103,11 +107,11 @@ export const AddButton = ({ firstCategoryData, getCategoryData }) => {
             renderModal((
                 <div className={commnStyles.dialogContainer}>
                     <div>新增店铺类别</div>
-                    <InputItem title="类别名称" value={ formData.shopCategoryName} onInputChange={handleCategoryTitleChange} />
-                    <InputItem title="类别描述" value={formData.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
-                    <SelectItem title="上级类别"  options={firstCategoryData} value={formData.parent.shopCategoryId} onSelectChange={handleCategorySelectChange} />
-                    <ImageUploadItem title="类别图片" onImageUpload={handleCategoryImageUpload}  />
-                    <InputItem title="优先级" value={formData.priority} onInputChange={handleCategoryPriorityInputChange}  />
+                    <InputItem title={ShopCategoryFormConfig.shopCategoryName} value={ formData.shopCategoryName} onInputChange={handleCategoryTitleChange} />
+                    <InputItem title={ShopCategoryFormConfig.shopCategoryDesc} value={formData.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
+                    <SelectItem title={ShopCategoryFormConfig.parent} options={firstCategoryData} value={formData.parent.shopCategoryId} onSelectChange={handleCategorySelectChange} />
+                    <ImageUploadItem title={ShopCategoryFormConfig.shopCategoryImg} onImageUpload={handleCategoryImageUpload}  />
+                    <InputItem title={ShopCategoryFormConfig.priority} value={formData.priority} onInputChange={handleCategoryPriorityInputChange}  />
                 </div>
             ))
         }
@@ -133,7 +137,7 @@ export const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
             submitFormData.append('shopCategoryStr', JSON.stringify(shopCategoryObj));
             submitFormData.append('shopCategoryManagementEdit_shopCategoryImg', renderFormDataRef.current.shopCategoryImg);
             const response :ResponseData<StatusResponseDataType.safe_t> = await postRequestFormData(CATEGORY_EDIT_PATH,submitFormData)
-            if (response.data?.success) {
+            if (response.data.success) {
                 showToast("修改店铺类别信息成功")
                 toggleModal()
                 getCategoryData()
@@ -143,6 +147,9 @@ export const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
             } catch (e) {
                 showToast("修改店铺类别信息失败")
             }
+        }else {
+            const message = ShopCategoryFormConfig[validatedResult.unvalidatedKey]  + '是必填项';
+            showToast(message);
         }
     }
     const handleCategoryTitleChange = (e) => {
@@ -211,11 +218,11 @@ export const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
         {
             renderModal(<div>
                 <div>店铺类别编辑</div>
-                <InputItem title="类别名称" value={formData?.shopCategoryName }  onInputChange={handleCategoryTitleChange} />
-                <InputItem title="类别描述" value={ formData?.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
-                {formData.parent&&<SelectItem title="上级类别" options={firstCategoryData}  value={formData.parent?.shopCategoryId} onSelectChange={handleCategorySelectChange} />}
-                <ImageUploadItem title="类别图片"  onImageUpload={handleCategoryImageUpload}  />
-                <InputItem title="优先级" value={formData?.priority} onInputChange={handleCategoryPriorityInputChange}  />
+                <InputItem title={ShopCategoryFormConfig.shopCategoryName} value={formData?.shopCategoryName }  onInputChange={handleCategoryTitleChange} />
+                <InputItem title={ShopCategoryFormConfig.shopCategoryDesc} value={ formData?.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
+                {formData.parent&&<SelectItem title={ShopCategoryFormConfig.parent} options={firstCategoryData}  value={formData.parent?.shopCategoryId} onSelectChange={handleCategorySelectChange} />}
+                <ImageUploadItem title={ShopCategoryFormConfig.shopCategoryImg} onImageUpload={handleCategoryImageUpload}  />
+                <InputItem title={ShopCategoryFormConfig.priority} value={formData?.priority} onInputChange={handleCategoryPriorityInputChange}  />
             </div>)
         }
     </div>

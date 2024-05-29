@@ -1,30 +1,3 @@
-.pageTitle {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 2em;
-}
-.contaner{
-    width: 100%;
-}
-.button {
-  padding: 10px 20px;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
-  outline: none;
-  color: #fff;
-  background-color: #4CAF50;
-  border: none;
-  border-radius: 15px;
-}
-
-.button:hover {background-color: #3e8e41}
-
-.button:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
 .table {
     width: 100%; // 确保表格填满父容器
     table-layout: fixed;
