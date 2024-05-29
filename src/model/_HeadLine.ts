@@ -37,7 +37,7 @@ export function from(m: t): safe_t{
     s.lineId = u.lineId || 0;
     s.lineName = u.lineName || '';
     s.lineLink = u.lineLink || '';
-    s.lineImg = u.lastEditTime || '';
+    s.lineImg = u.lineImg || '';
     s.priority = u.priority || 0;
     s.enableStatus = u.enableStatus || HeadLineStatus.Disabled;
     s.createTime = u.createTime || '';

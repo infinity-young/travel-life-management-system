@@ -8,7 +8,7 @@ import { validateForm } from '../../utils/formUtil.ts';
 import { postRequestFormData, postRequestJson } from '../../request/index.ts';
 import commonStyles from '../../styles/common.module.scss'
 import { ResponseData } from '../../model/ResponseData.ts';
-import { statusSelectOptions } from '../../config/commonConfig.ts';
+import { statusSelectOptionsForModal } from '../../config/commonConfig.ts';
 import { headLineFormConfig } from '../../config/headlineConfig.ts';
 import { HeadLineType } from '../../model/HeadLine.ts';
 import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
@@ -116,7 +116,7 @@ export const EditButton = ({row,fetchData}) => {
             <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
             <ImageUploadItem title={headLineFormConfig['lineImg']} onImageUpload={handleImageUpload}  />
             <InputItem title={headLineFormConfig['priority']} onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
-            <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptions} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
+            <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptionsForModal} value={ renderFormData.enableStatus} onSelectChange={handleSelectChange} />
           </div>
         )}
       </>
@@ -243,7 +243,7 @@ export const AddButton = ({fetchData}) => {
           <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
           <ImageUploadItem title={headLineFormConfig['lineImg']} onImageUpload={handleImageUpload}  />
           <InputItem title={headLineFormConfig['priority']} onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
-          <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptions} value={renderFormData.enableStatus} onSelectChange={handleSelectChange} />
+          <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptionsForModal} value={renderFormData.enableStatus} onSelectChange={handleSelectChange} />
         </div>
       )}
     </div>

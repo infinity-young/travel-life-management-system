@@ -1,9 +1,4 @@
 
-.pageTitle {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 2em; 
-}
 .table {
     width: 100%; // 确保表格填满父容器
     table-layout: fixed;
@@ -17,6 +12,10 @@
       text-align: center; /* 水平居中 */
       vertical-align: middle; /* 垂直居中 */
   }
+  th:last-child,
+    td:last-child {
+      width: 15%; /* 设置最后一个单元格宽度为父容器宽度的十五分之一 */
+    }
   img{
     height: 100%;
     width: 100%;
@@ -43,26 +42,9 @@
       font-size: 16px;
     }
   }
-
-  .headContainer{
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    button,input{
-      margin-right: 10px;
-    }
-  }
-  .dialogContainer{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .tableButtonContainer{
     display: flex;
-    justify-content: space-between;
+    justify-content:center;
     padding: 5px;
   }
   .noneContent {

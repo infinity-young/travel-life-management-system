@@ -7,12 +7,14 @@ import { formatDate } from '../../utils/dateUtil.ts';
 import commonStyles from '../../styles/common.module.scss'
 import { AddButton, DeleteButton, EditButton, PatchDeleteButton } from './Button.tsx';
 import { HeadLineType } from '../../model/HeadLine.ts';
-import { HeadLineResponseType } from '../../model/headLineResponse.ts';
+import { HeadLineResponseType } from '../../model/HeadLineResponse.ts';
+import { statusSelectOptions } from '../../config/commonConfig.ts';
+import { headLineType } from '../../config/headlineConfig.ts';
 
 const HealineComponent = () => {
   const [filter, setFilter] = useState(-1);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [data, setData] = useState({rows:[]});
+  const [selectedIds, setSelectedIds] = useState([] as number[]);
+  const [data, setData] = useState({} as HeadLineResponseType.safe_t);
   //以formdata的形式提交数据
   // 使用useMemo来确保formData只在组件首次渲染时创建一次,否则会陷入循环调用
   const formData = useMemo(() => {
@@ -51,21 +53,18 @@ const HealineComponent = () => {
       setSelectedIds((prevSelectedIds) => prevSelectedIds.filter((prevId) => prevId !== id));
     }
   };
-  const selectOptions = [{ value: -1, label: "全部" }, { value: 1, label: "启用" }, { value: 0, label: "禁用" }]
-  const headLineType = {
-    0:'禁用',
-    1: '启用'
-  }
-  if (!data||!data.rows) {
+  if (!data || !data.rows) {
       return <></>
   } 
   return (
     <div>
       <h1  className={commonStyles.pageTitle}>头条管理</h1>
       <div className={commonStyles.headContainer}>
-        <AddButton fetchData={fetchData}/>
-        <PatchDeleteButton selectedIds={selectedIds} fetchData={fetchData}/>
-        <FilterComponent options={selectOptions} value={ filter} onSelectChange={handleFilterChange}  />
+        <AddButton fetchData={fetchData} />
+        <span className={commonStyles.dividedSpan}></span>
+        <PatchDeleteButton selectedIds={selectedIds} fetchData={fetchData} />
+        <span className={commonStyles.dividedSpan}></span>
+        <FilterComponent options={statusSelectOptions} value={ filter} onSelectChange={handleFilterChange}  />
       </div>
       {data.rows.length>0&&<table className={styles.table}>
         <thead>
@@ -80,9 +79,10 @@ const HealineComponent = () => {
             <th>最近修改时间</th>
             <th>操作</th>
           </tr>
-        </thead>
+        </thead>     
         <tbody>
-          {data.rows.map((row:HeadLineType.safe_t, index:number) => (
+          {
+            data.rows.map((row: HeadLineType.safe_t, index: number) => (
               <tr key={index}>
               <td>
                 <input type="checkbox"
@@ -94,10 +94,7 @@ const HealineComponent = () => {
               <td>{row.lineName}</td>
               <td>{row.lineLink}</td>
               <td>
-              <img
-                src={row.lineImg ? IMAGE_PATH + row.lineImg : ''}
-                alt={row.lineName}
-              />
+              <img src={ IMAGE_PATH + row.lineImg}/>
               </td>              
               <td>{row.priority}</td>
               <td>{headLineType[row.enableStatus]}</td>
@@ -106,6 +103,7 @@ const HealineComponent = () => {
               <td>
                 <div className={styles.tableButtonContainer}>
                   <EditButton row={row} fetchData={fetchData} />
+                  <span className={commonStyles.dividedSpan}></span>
                   <DeleteButton row={row} fetchData={fetchData} />
                 </div>
               </td>

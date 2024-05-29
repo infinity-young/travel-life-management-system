@@ -37,13 +37,7 @@
     box-shadow: 0 5px #666;
     transform: translateY(4px);
 }
-
-.tableButtonContainer{
-    display: flex;
-    justify-content: space-between;
-    padding: 5px;
-}
-.noneContent {
-    text-align: center; 
-    margin-top: 50px;
-}
+.dividedSpan{
+    margin-left: 2px;
+    margin-right: 2px;
+  }
