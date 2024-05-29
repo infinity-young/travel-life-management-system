@@ -130,8 +130,8 @@ export const DeleteButton = ({row,fetchData}) => {
     // 删除操作的逻辑
     const handleDelete = async () => {
         const params={headLineId:row?.lineId}
-        const responseData:ResponseData = await postRequestJson(HEADLINE_DELETE_PATH,{},params)
-        if (responseData.data?.success) {
+        const responseData:ResponseData<StatusResponseDataType.safe_t> = await postRequestJson(HEADLINE_DELETE_PATH,{},params)
+        if (responseData.data.success) {
             fetchData();
             showToast('删除成功');
             closeDeleteModal()
@@ -147,136 +147,137 @@ export const DeleteButton = ({row,fetchData}) => {
     );
 };
 
-  //新增按钮
-  export const AddButton = ({fetchData}) => {
-    const defaultValue:HeadLineType.t = {
+//新增按钮
+export const AddButton = ({fetchData}) => {
+  const defaultValue:HeadLineType.t = {
+    lineName: '',
+    lineLink: '',
+    priority: 0,
+    enableStatus: 0,
+    lineImg:'',
+  }
+  const [renderFormData, setRenderFormData] = useState(defaultValue);
+  const renderFormDataRef = useRef(renderFormData);
+
+  useEffect(() => {
+      renderFormDataRef.current = renderFormData;
+  }, [renderFormData]);
+  const submitForm = async () => {
+      // 校验是否都输入
+      const validatedResult = validateForm(renderFormDataRef.current);
+      // 校验通过发起请求
+      if (validatedResult.isValidated) {
+      const headLineObj = { ...renderFormDataRef.current };
+      delete headLineObj.lineImg; // 如果你不需要lineImg，取消这行注释
+      const headLineStr = JSON.stringify(headLineObj);
+      const fd = new FormData();
+      if (renderFormDataRef.current.lineImg instanceof Blob) {
+          fd.append('headTitleManagementAdd_lineImg', renderFormDataRef.current.lineImg, 'filename.ext');
+      }  
+      fd.append('headLineStr', headLineStr);
+  
+      try {
+          const requestData:ResponseData<StatusResponseDataType.safe_t> = await postRequestFormData(HEADLINE_ADD_PATH, fd);
+          //提交成功toast提示并关闭弹窗
+          if (requestData.data.success) {
+          showToast('提交成功');
+          //  重新请求
+          fetchData()
+          toggleModal()
+          } else {
+          //提交失败
+          showToast('提交失败')
+          }
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+      } else {
+      const message = headLineFormConfig[validatedResult.unvalidatedKey]  + '是必填项';
+      showToast(message);
+      }
+  };
+  const resetForm = () => {
+    const resetItem = {
       lineName: '',
       lineLink: '',
       priority: 0,
       enableStatus: 0,
       lineImg:'',
     }
-    const [renderFormData, setRenderFormData] = useState(defaultValue);
-    const renderFormDataRef = useRef(renderFormData);
-  
-    useEffect(() => {
-        renderFormDataRef.current = renderFormData;
-    }, [renderFormData]);
-    const submitForm = async () => {
-        // 校验是否都输入
-        const validatedResult = validateForm(renderFormDataRef.current);
-        // 校验通过发起请求
-        if (validatedResult.isValidated) {
-        const headLineObj = { ...renderFormDataRef.current };
-        delete headLineObj.lineImg; // 如果你不需要lineImg，取消这行注释
-        const headLineStr = JSON.stringify(headLineObj);
-        const fd = new FormData();
-        if (renderFormDataRef.current.lineImg instanceof Blob) {
-            fd.append('headTitleManagementAdd_lineImg', renderFormDataRef.current.lineImg, 'filename.ext');
-        }  
-        fd.append('headLineStr', headLineStr);
-    
-        try {
-            const requestData = await postRequestFormData(HEADLINE_ADD_PATH, fd);
-            //提交成功toast提示并关闭弹窗
-            if (requestData.data?.success) {
-            showToast('提交成功');
-            //  重新请求
-            fetchData()
-            toggleModal()
-            } else {
-            //提交失败
-            showToast('提交失败')
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-        } else {
-        const message = headLineFormConfig[validatedResult.unvalidatedKey]  + '是必填项';
-        showToast(message);
-        }
-    };
-    const resetForm = () => {
-      const resetItem = {
-        lineName: '',
-        lineLink: '',
-        priority: 0,
-        enableStatus: 0,
-        lineImg:'',
-      }
-      const newRenderFormData = { ...renderFormData, ...resetItem }
-      setRenderFormData(newRenderFormData);
-    }
-    const { renderModal, toggleModal } = useModal(submitForm,resetForm);
-    const handleSelectChange = (e) => {
-      setRenderFormData(prevFormData => {
-        return {...prevFormData, enableStatus: e};
-      });
-    }
-    const handleImageUpload = (e) => {
-      setRenderFormData(prevFormData => {
-        return {...prevFormData, lineImg: e};
-      });
-    }
-    const handleTitleInputChange = (e) => {
-      setRenderFormData(prevFormData => {
-        return {...prevFormData, lineName: e};
-      });
-    }
-    const handleLinkInputChange = (e) => {
-      setRenderFormData(prevFormData => {
-        return {...prevFormData, lineLink: e};
-      });
-    }
-    const handlePriorityInputChange = (e) => {
-      setRenderFormData(prevFormData => {
-        return {...prevFormData, priority: e};
-      });
-    }
-    return (
-      <div>
-        <button onClick={toggleModal} className={commonStyles.button}>新增头条</button>
-        {renderModal(
-          <div className={styles.dialogContainer}>
-             <p>新增头条</p>
-            <InputItem title={headLineFormConfig['lineName']} onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
-            <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
-            <ImageUploadItem title={headLineFormConfig['lineImg']} onImageUpload={handleImageUpload}  />
-            <InputItem title={headLineFormConfig['priority']} onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
-            <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptions} value={renderFormData.enableStatus} onSelectChange={handleSelectChange} />
-          </div>
-        )}
-      </div>
-    );
+    const newRenderFormData = { ...renderFormData, ...resetItem }
+    setRenderFormData(newRenderFormData);
   }
-  //批量删除按钮 
- export  const PatchDeleteButton =({ selectedIds,fetchData }) => {
-    const { ConfirmDeleteModal, openDeleteModal } = useConfirmDelete();
-    // 删除操作的逻辑
-    const handleDelete = async () => {
-      //关闭弹窗
-      try {
-        const params = {
-          headLineIdListStr: selectedIds.join(',')
-        }
-        const responseDate:ResponseData  = await postRequestJson(HEADLINE_BATCH_DELETE_PATH, {}, params);
-        if (responseDate.data?.success) {
-          showToast('删除数据成功')
-          fetchData()
-        } else {
-          showToast('删除数据失败')
-        }
-        
-      } catch (e) {
+  const { renderModal, toggleModal } = useModal(submitForm,resetForm);
+  const handleSelectChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, enableStatus: e};
+    });
+  }
+  const handleImageUpload = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineImg: e};
+    });
+  }
+  const handleTitleInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineName: e};
+    });
+  }
+  const handleLinkInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, lineLink: e};
+    });
+  }
+  const handlePriorityInputChange = (e) => {
+    setRenderFormData(prevFormData => {
+      return {...prevFormData, priority: e};
+    });
+  }
+  return (
+    <div>
+      <button onClick={toggleModal} className={commonStyles.button}>新增头条</button>
+      {renderModal(
+        <div className={styles.dialogContainer}>
+            <p>新增头条</p>
+          <InputItem title={headLineFormConfig['lineName']} onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
+          <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
+          <ImageUploadItem title={headLineFormConfig['lineImg']} onImageUpload={handleImageUpload}  />
+          <InputItem title={headLineFormConfig['priority']} onInputChange={handlePriorityInputChange} value={renderFormData.priority } />
+          <SelectItem title={headLineFormConfig['enableStatus']} options={statusSelectOptions} value={renderFormData.enableStatus} onSelectChange={handleSelectChange} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+//批量删除按钮 
+export  const PatchDeleteButton =({ selectedIds,fetchData }) => {
+  const { ConfirmDeleteModal, openDeleteModal } = useConfirmDelete();
+  // 删除操作的逻辑
+  const handleDelete = async () => {
+    //关闭弹窗
+    try {
+      const params = {
+        headLineIdListStr: selectedIds.join(',')
+      }
+      const responseDate:ResponseData<StatusResponseDataType.safe_t>  = await postRequestJson(HEADLINE_BATCH_DELETE_PATH, {}, params);
+      if (responseDate.data.success) {
+        showToast('删除数据成功')
+        fetchData()
+      } else {
         showToast('删除数据失败')
       }
-    };
-  
-    return (
-      <div>
-        <button onClick={openDeleteModal} className={commonStyles.button}>批量删除头条</button>
-        <ConfirmDeleteModal onConfirm={handleDelete} />
-      </div>
-    );
-  }
+      
+    } catch (e) {
+      showToast('删除数据失败')
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={openDeleteModal} className={commonStyles.button}>批量删除头条</button>
+      <ConfirmDeleteModal onConfirm={handleDelete} />
+    </div>
+  );
+}
   

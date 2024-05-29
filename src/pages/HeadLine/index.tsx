@@ -6,9 +6,8 @@ import { postRequestFormData } from '../../request/index.ts';
 import { formatDate } from '../../utils/dateUtil.ts';
 import commonStyles from '../../styles/common.module.scss'
 import { AddButton, DeleteButton, EditButton, PatchDeleteButton } from './Button.tsx';
-import { DataType, ResponseData } from '../../model/ResponseData.ts';
-import { HeadLineResponseType } from '../../model/HeadLineResponse.ts';
 import { HeadLineType } from '../../model/HeadLine.ts';
+import { HeadLineResponseType } from '../../model/headLineResponse.ts';
 
 const HealineComponent = () => {
   const [filter, setFilter] = useState(-1);
@@ -24,7 +23,7 @@ const HealineComponent = () => {
   const fetchData = async () => {
     try {
       const requestData = await postRequestFormData<HeadLineResponseType.t>(HEADLINE_GET_PATH, formData);
-      const data:DataType<HeadLineResponseType.t> = requestData.data||{} as DataType<HeadLineResponseType.t>;
+      const data:HeadLineResponseType.t = requestData.data||{} as HeadLineResponseType.t;
       const formedData:HeadLineResponseType.safe_t=HeadLineResponseType.from(data)
       setData(formedData); 
     } catch (error) {
