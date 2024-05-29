@@ -5,3 +5,7 @@ export type InputItemProps = {
     placeholder?: string;
   };
   
+export type OptionType = {
+  value: number;
+  label:string
+}

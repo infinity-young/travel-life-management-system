@@ -25,8 +25,7 @@ const HealineComponent = () => {
   const fetchData = async () => {
     try {
       const requestData = await postRequestFormData<HeadLineResponseType.t>(HEADLINE_GET_PATH, formData);
-      const data:HeadLineResponseType.t = requestData.data||{} as HeadLineResponseType.t;
-      const formedData:HeadLineResponseType.safe_t=HeadLineResponseType.from(data)
+      const formedData:HeadLineResponseType.safe_t=HeadLineResponseType.from(requestData.data)
       setData(formedData); 
     } catch (error) {
       console.error('Error fetching data:', error);

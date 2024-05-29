@@ -1,235 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { CATEGORY_ADD_PATH, CATEGORY_EDIT_PATH, CATEGORY_FIRST_LEVEL_GET_PATH, CATEGORY_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
-import { postRequestFormData, postRequestJson } from '../../request/index.ts';
-import { useModal } from '../../hooks/modals/editModal.tsx';
-import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
-import { validateForm } from '../../utils/formUtil.ts';
+import React, { useEffect, useState } from 'react';
+import {CATEGORY_FIRST_LEVEL_GET_PATH, CATEGORY_GET_PATH, IMAGE_PATH } from '../../config/requestConfig.ts';
 import styles from './index.module.scss'
+import commnStyles from '../../styles/common.module.scss'
 import { formatDate } from '../../utils/dateUtil.ts';
 import { FilterComponent } from '../../components/headComponents/index.tsx';
-const AddButton = ({ firstCategoryData,getCategoryData }) => {
-    const defaultFormData = {
-        shopCategoryName: "",
-        shopCategoryDesc: "",
-        shopCategoryImg: "",
-        priority: "",
-        parent: {
-            shopCategoryId: 1
-        }
-    }
-    const [formData, setFormData] = useState(defaultFormData);
-    const formDataRef = useRef(formData);
-    useEffect(() => { 
-        formDataRef.current = formData;
-    }, [formData]);
-    const submitForm = async () => {
-        const validatedResult = validateForm(formDataRef.current);
-        if (validatedResult.isValidated) {
-            try {
-                const submitFormData = new FormData();
-                const shopCategoryObj = {
-                    ...formDataRef.current
-                }
-                delete shopCategoryObj.shopCategoryImg;
-                submitFormData.append("shopCategoryStr", JSON.stringify(shopCategoryObj));
-                submitFormData.append("shopCategoryManagementAdd_shopCategoryImg", formDataRef.current.shopCategoryImg);
-                const response = await postRequestFormData(CATEGORY_ADD_PATH, submitFormData)
-                if (response.data?.success) {
-                    showToast("新增店铺类别成功")
-                    toggleModal();
-                    getCategoryData()
-                } else {
-                    showToast("新增店铺列表失败")
-                }
-                
-            } catch {
-                showToast("新增店铺类别失败")
-            }
-        }
-    }
-    const resetForm = () => {
-        setFormData(defaultFormData);
-    }
-    const handleCategoryTitleChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryName:e
-            }
-        })
-    }
-    const handleCategoryDesChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryDesc:e
-            }
-        })
-    }
-    const handleCategorySelectChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                parent: {
-                    shopCategoryId:e
-                }
-           }
+import { AddButton, EditButton } from './Button.tsx';
+import { postRequestJson } from '../../request/index.ts';
+import { ShopCategoryResponseType } from '../../model/ShopCategoryResponse.ts';
+import { ShopCategory } from '../../model/ShopCategory.ts';
+import { OptionType } from '../../model/common.ts';
+import { pageFilterOptions } from '../../config/commonConfig.ts';
 
-        })
-    }
-    const handleCategoryImageUpload = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryImg:e
-            }
-        })
-    }
-    const handleCategoryPriorityInputChange = (e) => {
-        setFormData(
-            (prevFormData) => {
-                return {
-                    ...prevFormData,
-                    priority:e
-                }
-            }
-        )
-    }
-    const { renderModal, toggleModal } = useModal(submitForm, resetForm);
-    return <div>
-        <button onClick={toggleModal} className={styles.button}>新增店铺类别</button>
-        {
-            renderModal((
-                <div>
-                    <div>新增店铺类别</div>
-                    <InputItem title="类别名称" value={ formData.shopCategoryName} onInputChange={handleCategoryTitleChange} />
-                    <InputItem title="类别描述" value={formData.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
-                    <SelectItem title="上级类别"  options={firstCategoryData} value={formData.parent.shopCategoryId} onSelectChange={handleCategorySelectChange} />
-                    <ImageUploadItem title="类别图片" onImageUpload={handleCategoryImageUpload}  />
-                    <InputItem title="优先级" value={formData.priority} onInputChange={handleCategoryPriorityInputChange}  />
-                </div>
-            ))
-        }
-    </div>
-}
-
-const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
-    const [formData, setFormData] = useState(row);
-    const renderFormDataRef = useRef(formData);
-    useEffect(() => {
-      renderFormDataRef.current = formData;
-    }, [formData]);
-
-    const submitForm = async () => {
-        // 校验是否都输入
-    const validatedResult = validateForm(renderFormDataRef.current);
-        // 校验通过发起请求
-        if (validatedResult.isValidated) {
-            try {
-                const shopCategoryObj = { ...renderFormDataRef.current };
-            delete shopCategoryObj.shopCategoryImg;
-            const submitFormData = new FormData();
-            submitFormData.append('shopCategoryStr', JSON.stringify(shopCategoryObj));
-            submitFormData.append('shopCategoryManagementEdit_shopCategoryImg', renderFormDataRef.current.shopCategoryImg);
-            const response = await postRequestFormData(CATEGORY_EDIT_PATH,submitFormData)
-            if (response.data?.success) {
-                showToast("修改店铺类别信息成功")
-                toggleModal()
-                getCategoryData()
-            } else {
-                showToast("修改店铺类别信息失败")
-            }
-            } catch (e) {
-                showToast("修改店铺类别信息失败")
-            }
-        }
-    }
-    const handleCategoryTitleChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryName: e
-            }
-        })
-    }
-    const handleCategoryDesChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryDesc: e
-            }
-        })
-    }
-    const handleCategorySelectChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                parent: {
-                    ...prevFormData.parent,
-                    shopCategoryId: e
-                }
-            }
-        })
-    }
-    const handleCategoryImageUpload = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategoryImg:e
-            }
-        })
-    }
-    const handleCategoryPriorityInputChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                priority:e
-            }
-        })
-    }
-    
-    const { renderModal, toggleModal } = useModal(submitForm);
-    return <div>
-        <button onClick={toggleModal} className={styles.button}>编辑</button>
-        {
-            renderModal(<div>
-                <div>店铺类别编辑</div>
-                <InputItem title="类别名称" value={formData?.shopCategoryName }  onInputChange={handleCategoryTitleChange} />
-                <InputItem title="类别描述" value={ formData?.shopCategoryDesc} onInputChange={ handleCategoryDesChange} />
-                {formData.parent&&<SelectItem title="上级类别" options={firstCategoryData}  value={formData.parent?.shopCategoryId} onSelectChange={handleCategorySelectChange} />}
-                <ImageUploadItem title="类别图片"  onImageUpload={handleCategoryImageUpload}  />
-                <InputItem title="优先级" value={formData?.priority} onInputChange={handleCategoryPriorityInputChange}  />
-            </div>)
-        }
-    </div>
-    
-}
 const CategoryManagerComponent = () => {
-    const [data, setData] = useState([]);
-    const [netData, setNetData] = useState([]);
-    const [firstCategoryData, setFirstCategoryData] = useState([]);
-    const [pageSetting, setPageSetting] = useState({ pageIndex: 1, pageItem: 5, totalItems:5,isShowNextPage:false,isShowPrevPage:false });
+    const defaultPageSetting = {
+        pageIndex: 1,
+        pageItem: 5,
+        totalItems: 5,
+        isShowNextPage: false,
+        isShowPrevPage: false
+    }
+    const [data, setData] = useState([] as ShopCategory.t[]);
+    const [netData, setNetData] = useState([] as ShopCategory.t[]);
+    const [firstCategoryData, setFirstCategoryData] = useState([] as OptionType[]);
+    const [pageSetting, setPageSetting] = useState(defaultPageSetting);
     const getCategoryData = async () => {
-        const response = await postRequestJson(CATEGORY_GET_PATH)
-        if (response.data?.rows) {
-            setNetData(response.data.rows);
-            setData(response.data.rows.slice(0,pageSetting.pageItem));
+        const response = await postRequestJson<ShopCategoryResponseType.t>(CATEGORY_GET_PATH)
+        const data:ShopCategoryResponseType.safe_t=ShopCategoryResponseType.from(response.data)
+        if (data.rows) {
+            setNetData(data.rows);
+            setData(data.rows.slice(0,pageSetting.pageItem));
 
         }
-        if (response.data?.total) {
+        if (data.total) {
             setPageSetting((prevPageSetting) => {
                 return {
                     ...prevPageSetting,
-                    totalItems: response.data?.total,
-                    isShowNextPage:response.data?.total>prevPageSetting.pageIndex*prevPageSetting.pageItem
+                    totalItems: data.total,
+                    isShowNextPage:data.total>prevPageSetting.pageIndex*prevPageSetting.pageItem
                 }
             })
         }
     }
     const getFirtCategory = async () => {
-        const response = await postRequestJson(CATEGORY_FIRST_LEVEL_GET_PATH)
-        if (response.data?.rows) {
-            const categoryOptions = response.data?.rows?.map((item) => {
+        const response = await postRequestJson<ShopCategoryResponseType.t>(CATEGORY_FIRST_LEVEL_GET_PATH)
+        const data:ShopCategoryResponseType.safe_t=ShopCategoryResponseType.from(response.data)
+        if (data.rows) {
+            const categoryOptions = data.rows.map((item) => {
                 return {
                     value: item.shopCategoryId,
                     label:item.shopCategoryName
@@ -258,10 +74,6 @@ const CategoryManagerComponent = () => {
         setData(currentData)
         
     }
-    const pageFilterOptions = [
-        { value: 5, label: 5 },
-        {value:10,label:10}
-    ]
     const handleNextPage = () => {
         setPageSetting((prevPageSetting) => {
             return {
@@ -293,7 +105,7 @@ const CategoryManagerComponent = () => {
     }
     return (
         <div>
-             <h1  className={styles.pageTitle}>类别管理</h1>
+             <h1  className={commnStyles.pageTitle}>类别管理</h1>
             <div><AddButton firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></div>
             <table className={styles.table}>
                 <thead>
@@ -315,25 +127,26 @@ const CategoryManagerComponent = () => {
                                   <td>{row.shopCategoryId}</td>
                                   <td>{row.shopCategoryName}</td>
                                   <td>{row.shopCategoryDesc}</td>
-                                  <td>{row?.parent?.shopCategoryName}</td>
+                                  <td>{row.parent?.shopCategoryName}</td>
                                   <td>
-                                    <img
-                                        src={row.shopCategoryImg ? IMAGE_PATH + row.shopCategoryImg : ''} />
+                                    <img src={IMAGE_PATH + row.shopCategoryImg} />
                                   </td>
                                   <td>{row.priority}</td>
                                   <td>{formatDate(row.createTime)}</td>
                                   <td>{formatDate(row.lastEditTime)}</td>
-                                <td><EditButton row={row} firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} /></td>
+                                  <td>
+                                    <EditButton row={row} firstCategoryData={firstCategoryData} getCategoryData={getCategoryData} />
+                                  </td>
                               </tr>
                       ))}
                 </tbody>   
             </table>
-            <div className={styles.bottomContainer}>
+            <div className={commnStyles.bottomContainer}>
                 <FilterComponent options={pageFilterOptions} value={pageSetting.pageItem} onSelectChange={handleFilterChange} />
-                <span className={styles.dividedSpan}></span>
-                {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
-                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={styles.dividedSpan}></span>}
-                {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
+                <span className={commnStyles.dividedSpan}></span>
+                {pageSetting.isShowPrevPage&&<button  className={commnStyles.button} onClick={handlePrevPage} >上一页</button>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={commnStyles.dividedSpan}></span>}
+                {pageSetting.isShowNextPage&&<button className={commnStyles.button} onClick={handleNextPage}>下一页</button>}
             </div>
         </div>
     )

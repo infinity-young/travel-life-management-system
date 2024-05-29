@@ -1,6 +1,5 @@
 import { HEADLINE_ADD_PATH, HEADLINE_BATCH_DELETE_PATH, HEADLINE_DELETE_PATH, HEADLINE_EDIT_PATH } from '../../config/requestConfig.ts';
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './index.module.scss'
 import { useModal } from '../../hooks/modals/editModal.tsx';
 import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
@@ -110,7 +109,7 @@ export const EditButton = ({row,fetchData}) => {
       <>
         <button onClick={toggleModal} className={commonStyles.button}>编辑</button>
         {renderModal(
-          <div className={styles.dialogContainer}>
+          <div className={commonStyles.dialogContainer}>
              <p>头条编辑</p>
             <InputItem title={headLineFormConfig['lineName']} onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
             <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />
@@ -237,7 +236,7 @@ export const AddButton = ({fetchData}) => {
     <div>
       <button onClick={toggleModal} className={commonStyles.button}>新增头条</button>
       {renderModal(
-        <div className={styles.dialogContainer}>
+        <div className={commonStyles.dialogContainer}>
             <p>新增头条</p>
           <InputItem title={headLineFormConfig['lineName']} onInputChange={handleTitleInputChange} value={ renderFormData.lineName} />
           <InputItem title={headLineFormConfig['lineLink']} onInputChange={handleLinkInputChange} value={renderFormData.lineLink} />

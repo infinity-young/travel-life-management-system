@@ -1,8 +1,4 @@
-.pageTitle {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 2em;
-}
+
 .table{
   width: 100%;
   table-layout: fixed;
@@ -24,32 +20,4 @@
         display: block; /* 这将消除图片下方的空隙 */
       }
   }
-}
-.button {
-  padding: 10px 20px;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
-  outline: none;
-  color: #fff;
-  background-color: #4CAF50;
-  border: none;
-  border-radius: 15px;
-}
-
-.button:hover {background-color: #3e8e41}
-
-.button:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
-.bottomContainer{
-  display: flex;
-  flex-direction: 'row';
-}
-.dividedSpan{
-  margin-left: 1px;
-  margin-right: 1px;
 }

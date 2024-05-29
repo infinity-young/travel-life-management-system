@@ -1,5 +1,5 @@
 export function formatDate(timestamp) {
-    if (timestamp.length <= 0) {
+    if (!timestamp||timestamp.length <= 0) {
        return ''
     }
     const date = new Date(timestamp);
