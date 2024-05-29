@@ -10,7 +10,7 @@ export function getRequest<T>(path: string, params?: Record<string, any>):Promis
     axios
       .get(fullPath, { params: searchParams })
       .then((response) => {
-        resolve(response.data);
+        resolve(response);
       })
       .catch((error) => {
         reject(error);

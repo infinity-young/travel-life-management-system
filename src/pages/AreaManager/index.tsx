@@ -4,14 +4,17 @@ import { getRequest } from '../../request/index.ts';
 import styles from './index.module.scss'
 import { formatDate } from '../../utils/dateUtil.ts';
 import { AddButton, EditButton } from './Button.tsx';
+import { AreaResponseType } from '../../model/AreaResponse.ts';
+import { AreaType } from '../../model/AreaType.ts';
 
 const AreaManagerComponent = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([] as AreaType.safe_t[] );
     useEffect(()=>{getPageData()},[])
     const getPageData = async () => {
-        const response = await getRequest(AREA_GET_PATH, {})
-        if (response?.rows) {
-            setData(response.rows);
+        const response = await getRequest<AreaResponseType.t>(AREA_GET_PATH, {})
+        const data=AreaResponseType.from(response.data)
+        if (data.rows) {
+            setData(data.rows);
         }
     }
     if (!data) {

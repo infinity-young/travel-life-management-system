@@ -19,8 +19,8 @@ const CategoryManagerComponent = () => {
         isShowNextPage: false,
         isShowPrevPage: false
     }
-    const [data, setData] = useState([] as ShopCategory.t[]);
-    const [netData, setNetData] = useState([] as ShopCategory.t[]);
+    const [data, setData] = useState([] as ShopCategory.safe_t[]);
+    const [netData, setNetData] = useState([] as ShopCategory.safe_t[]);
     const [firstCategoryData, setFirstCategoryData] = useState([] as OptionType[]);
     const [pageSetting, setPageSetting] = useState(defaultPageSetting);
     const getCategoryData = async () => {

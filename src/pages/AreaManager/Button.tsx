@@ -7,12 +7,13 @@ import { useModal } from '../../hooks/modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
 import { ResponseData } from '../../model/ResponseData.ts';
+import { AreaFormConfig } from '../../config/areaConfig.ts';
 //新增区域信息按钮
-export const AddButton = ({getPageData}) => {
-    const defaultFormData = {
-        areaName: "",
-        priority:""
-    }
+export const AddButton = ({ getPageData }) => {
+  const defaultFormData = {
+    areaName: "",
+    priority:""
+  }
     const [renderFormData, setRenderFormData] = useState(defaultFormData);
     const renderFormDataRef = useRef(renderFormData);
     useEffect(() => {
@@ -42,7 +43,7 @@ export const AddButton = ({getPageData}) => {
             console.error('Error fetching data:', error);
           }
         } else {
-          const message = validatedResult.unvalidatedKey + '是必填项';
+          const message = AreaFormConfig[validatedResult.unvalidatedKey] + '是必填项';
           showToast(message);
         }    
     }     
@@ -66,8 +67,8 @@ export const AddButton = ({getPageData}) => {
           {renderModal(
             <div className={commnStyles.dialogContainer}>
                <p>新增区域信息</p>
-              <InputItem title="区域名" onInputChange={handleAreaNameInputChange} value={ renderFormData.areaName} />
-              <InputItem title="优先级" onInputChange={handlePriorityInputChange} value={renderFormData.priority} placeholder="最多五位，必须是数字" />
+              <InputItem title={AreaFormConfig.areaName} onInputChange={handleAreaNameInputChange} value={ renderFormData.areaName} />
+              <InputItem title={AreaFormConfig.priority} onInputChange={handlePriorityInputChange} value={renderFormData.priority} placeholder="最多五位，必须是数字" />
             </div>
           )}
         </>
@@ -114,12 +115,12 @@ export const EditButton = ({row,getPageData}) => {
             console.error('Error fetching data:', error);
           }
         } else {
-          const message = validatedResult.unvalidatedKey + '是必填项';
+          const message =AreaFormConfig[validatedResult.unvalidatedKey] + '是必填项';
           showToast(message);
         }    
     }     
-    const resetForm = () => {
-        setRenderFormData(defaultFormData)
+  const resetForm = () => {
+        setRenderFormData({...defaultFormData,areaName: "",priority:0})
     }
     const { renderModal, toggleModal } = useModal(submitForm, resetForm);
     const handleAreaNameInputChange = (e) => {
@@ -138,8 +139,8 @@ export const EditButton = ({row,getPageData}) => {
           {renderModal(
             <div className={commnStyles.dialogContainer}>
                <p>编辑区域信息</p>
-              <InputItem title="区域名" onInputChange={handleAreaNameInputChange} value={ renderFormData.areaName} />
-              <InputItem title="优先级" onInputChange={handlePriorityInputChange} value={renderFormData.priority} placeholder="最多五位，必须是数字" />
+              <InputItem title={AreaFormConfig.areaName} onInputChange={handleAreaNameInputChange} value={ renderFormData.areaName} />
+              <InputItem title={AreaFormConfig.priority} onInputChange={handlePriorityInputChange} value={renderFormData.priority} placeholder="最多五位，必须是数字" />
             </div>
           )}
         </>
