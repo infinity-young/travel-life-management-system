@@ -18,7 +18,7 @@ const ShopManagerComponent = () => {
     const defaultShopParams = {
         enableStatus: -1,
         page: 1,
-        rows: 2,
+        rows: 5,
         shopCategoryId:-1
     }
     const defaultPageSetting = {
@@ -27,7 +27,8 @@ const ShopManagerComponent = () => {
         total:0
     }
     const [shopData, setShopData] = useState([] as ShopType.safe_t[]);
-    const [shopCategory, setShopCategory] = useState([]as OptionType[]);
+    const [shopCategory, setShopCategory] = useState([] as OptionType[]);
+    const [shopCategoryMap, setShopCategoryMap] = useState<Map<number, string>>(new Map());
     const [pageSetting, setPageSetting] = useState(defaultPageSetting)
     const [shopParam, setShopParam] = useState(defaultShopParams)
     useEffect(() => {
@@ -45,7 +46,7 @@ const ShopManagerComponent = () => {
             } else {
                 showToast("获取店铺信息失败")
             }
-            if (response.data?.total) {
+            if (response.data.total) {
                 setPageSetting({
                     isShowPrevPage: shopParam.page>1,
                     isShowNextPage: shopParam.rows*shopParam.page<=response.data?.total,
@@ -66,6 +67,11 @@ const ShopManagerComponent = () => {
                     label: item.shopCategoryName
                 }));
                 setShopCategory(categoryData)
+                const currentShopCategoryMap = new Map<number, string>();
+                for (let i = 0; i < data.rows.length;i++) {
+                    currentShopCategoryMap.set(data.rows[i].shopCategoryId, data.rows[i].shopCategoryName);
+                }
+                setShopCategoryMap(currentShopCategoryMap);
                   
             } else {
                 showToast("获取店铺类别信息失败")       
@@ -180,7 +186,7 @@ const ShopManagerComponent = () => {
                     <th>店铺名称</th>
                     <th>店铺描述</th>
                     <th>店铺地址</th>
-                    <th>类别Id</th>
+                    <th>类别</th>
                     <th>电话</th>
                     <th>优先级</th>
                     <th>店铺状态</th>
@@ -197,7 +203,7 @@ const ShopManagerComponent = () => {
                         <td>{row.shopName}</td>
                         <td>{row.shopDesc}</td>
                         <td>{row.shopAddr}</td>
-                        <td>{row.shopCategory.shopCategoryId}</td>
+                        <td>{shopCategoryMap.get(row.shopCategory.shopCategoryId)}</td>
                         <td>{row.phone}</td>
                         <td>{row.priority}</td>
                         <td>{statusType[row.enableStatus] }</td>
