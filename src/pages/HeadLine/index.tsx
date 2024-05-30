@@ -7,7 +7,7 @@ import { formatDate } from '../../utils/dateUtil.ts';
 import commonStyles from '../../styles/common.module.scss'
 import { AddButton, DeleteButton, EditButton, PatchDeleteButton } from './Button.tsx';
 import { HeadLineType } from '../../model/HeadLine.ts';
-import { HeadLineResponseType } from '../../model/HeadLineResponse.ts';
+import { HeadLineResponseType } from '../../model/HeadLineResponseNew.ts';
 import { statusSelectOptions, statusType } from '../../config/commonConfig.ts';
 
 const HealineComponent = () => {
