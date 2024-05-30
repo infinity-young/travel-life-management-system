@@ -1,107 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { postRequestJson } from '../../request/index.ts';
-import { SHOP_CATEGORY_SECOND_PATH, SHOP_DATA_PATH, SHOP_EDIT_PATH, SHOP_SEARCH_BY_ID_PATH } from '../../config/requestConfig.ts';
-import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
-import { useModal } from '../../hooks/modals/editModal.tsx';
-import { validateForm } from '../../utils/formUtil.ts';
+import { SHOP_CATEGORY_SECOND_PATH, SHOP_DATA_PATH, SHOP_SEARCH_BY_ID_PATH } from '../../config/requestConfig.ts';
+import { showToast } from '../../components/dialogComponents/index.tsx';
 import styles from './index.module.scss'
+import commonStyles from '../../styles/common.module.scss'
 import { FilterComponent, InputComponent } from '../../components/headComponents/index.tsx';
 import { formatDate } from '../../utils/dateUtil.ts';
-const EditButton = ({ row,shopCategory,setShopParam }) => {
-    const [formData, setFormData] = useState(row)
-    const renderFormDataRef = useRef(formData);
-    useEffect(() => {
-      renderFormDataRef.current = formData;
-    }, [formData]);
-    
-    const onSubmit = () => {
-        const validatedResult = validateForm(renderFormDataRef.current);
-        if (validatedResult.isValidated) {
-            try {
-                const shopStr = JSON.stringify(renderFormDataRef.current);
-                const formData = new FormData();
-                formData.append('shopStr', shopStr);
-                const response = postRequestJson(SHOP_EDIT_PATH, formData)
-                if (response?.data?.success) {
-                    setShopParam((prevShopPram) => {
-                        return {
-                            ...prevShopPram,
-                            enableStatus: -1,
-                        }
-                    })
-                    showToast("编辑店铺信息成功")
-                    toggleModal()
-                } else {
-                    showToast("编辑店铺信息失败")
-                }
-            } catch {
-                showToast("编辑店铺信息失败")
-            }
-        }
-    }
-    const { toggleModal, renderModal } = useModal(onSubmit)
-    const onShopNameChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopName:e
-           }
-       })
-    }
-    const onShopCategoryChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                shopCategory: {
-                    ...prevFormData.shopCategory,
-                    shopCategoryId:e
-                }
-           }
-       })
-    }
-    const onPriorityChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                priority:e
-            }
-        })
-    }
-    const shopStatusOptions = [ { value: -1, label: '禁用' },
-    { value: 1, label: '启用' }]
-    const onShopStatusChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                enableStatus:e
-            }
-        })
-    }
-    const onAdviceChange = (e) => {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-            advice:e
-          }
-        })
-    }
-
-    return <div>
-        <button onClick={toggleModal} className={styles.button}>编辑</button>
-        {
-            renderModal(
-                <div>
-                    <div>店铺类别编辑</div>
-                    <InputItem title="店铺名" value={formData.shopName} onInputChange={onShopNameChange} />
-                    <SelectItem title="店铺类别" options={shopCategory} onSelectChange={onShopCategoryChange} value={formData.shopCategory.shopCategoryId} />
-                    <InputItem title="优先级" value={formData.priority} onInputChange={onPriorityChange} />
-                    <SelectItem title="店铺状态" options={shopStatusOptions} onSelectChange={onShopStatusChange} value={formData.enableStatus} />
-                    <InputItem title="店铺建议" value={formData.advice} onInputChange={onAdviceChange} />
-                 </div>
-            )
-        }
-    </div>
-}
+import { EditButton } from './Button.tsx';
+import { shopStatusOptions } from '../../config/shopConfig.ts';
+import { pageFilterOptions, statusType } from '../../config/commonConfig.ts';
+import { ShopResponse } from '../../model/ShopResponse.ts';
+import { ShopType } from '../../model/ShopType.ts';
+import { ShopCategoryResponseType } from '../../model/ShopCategoryResponse.ts';
+import { OptionType } from '../../model/common.ts';
 
 const ShopManagerComponent = () => {
     const defaultShopParams = {
@@ -115,8 +26,8 @@ const ShopManagerComponent = () => {
         isShowNextPage: false,
         total:0
     }
-    const [shopData, setShopData] = useState([]);
-    const [shopCategory, setShopCategory] = useState([]);
+    const [shopData, setShopData] = useState([] as ShopType.safe_t[]);
+    const [shopCategory, setShopCategory] = useState([]as OptionType[]);
     const [pageSetting, setPageSetting] = useState(defaultPageSetting)
     const [shopParam, setShopParam] = useState(defaultShopParams)
     useEffect(() => {
@@ -127,9 +38,10 @@ const ShopManagerComponent = () => {
     },[shopParam])
     const getShopData = async () => {
         try {
-            const response = await postRequestJson(SHOP_DATA_PATH,{},shopParam)
-            if (response.data?.rows) {
-                setShopData(response?.data?.rows);
+            const response = await postRequestJson<ShopResponse.t>(SHOP_DATA_PATH, {}, shopParam)
+            const data=ShopResponse.from(response.data)
+            if (data.rows) {
+                setShopData(data.rows);
             } else {
                 showToast("获取店铺信息失败")
             }
@@ -146,9 +58,10 @@ const ShopManagerComponent = () => {
     }
     const getShopCategoryData = async () => {
         try {
-            const response = await postRequestJson(SHOP_CATEGORY_SECOND_PATH);
-            if (response.data?.rows) {
-                const categoryData = response.data.rows.map((item) => ({
+            const response = await postRequestJson<ShopCategoryResponseType.t>(SHOP_CATEGORY_SECOND_PATH);
+            const data=ShopCategoryResponseType.from(response.data)
+            if (data.rows) {
+                const categoryData = data.rows.map((item) => ({
                     value: item.shopCategoryId,
                     label: item.shopCategoryName
                 }));
@@ -162,12 +75,6 @@ const ShopManagerComponent = () => {
         }
 
     }
-    const shopStatusOptions = [
-        { value: -1, label: "全部状态" },
-        { value:2, label: "禁用" },
-        { value: 1, label: "启用" },
-        {value:0,  label:"待审核"}
-    ]
     const onShopStatusChange = (e) => {
         setShopParam((prevShopParam) => {
             return {
@@ -189,9 +96,10 @@ const ShopManagerComponent = () => {
             const shopCategoryParams = {
                 shopId:e
             }
-            const response = await postRequestJson(SHOP_SEARCH_BY_ID_PATH, {}, shopCategoryParams)
-            if (response.data?.rows) {
-                setShopData(response.data?.rows);
+            const response = await postRequestJson<ShopResponse.t>(SHOP_SEARCH_BY_ID_PATH, {}, shopCategoryParams)
+            const data=ShopResponse.from(response.data)
+            if (data.rows) {
+                setShopData(data.rows);
             }
             else {
                 showToast("店铺查询失败")
@@ -208,14 +116,6 @@ const ShopManagerComponent = () => {
             }
         })
     }
-    const pageFilterOptions = [
-        {
-            value: 2, label: 2,
-        },
-        {
-            value: 4, label:4
-        }
-    ]
     const handleFilterChange = (e) => {
         setShopParam((prevShopParam) => {
             return {
@@ -263,15 +163,12 @@ const ShopManagerComponent = () => {
         })
     }
     const currentShopCategory = [...shopCategory, { value: -1, label: "全部类别" }]
-    const shopStatus = {
-        0: '禁用',
-        1:'启用'
-    }
-    return <div>
-        <h1  className={styles.pageTitle}>店铺管理</h1>
-        <div className={styles.headButtonContainer}>
+    return (
+        <div>
+        <h1  className={commonStyles.pageTitle}>店铺管理</h1>
+        <div className={commonStyles.headContainer}>
             <FilterComponent options={shopStatusOptions} onSelectChange={onShopStatusChange} value={shopParam.enableStatus} />
-            <span className={styles.dividedSpan}></span>
+            <span className={commonStyles.dividedSpan}></span>
             <FilterComponent  options={currentShopCategory} onSelectChange={onShopCategoryChange} value={shopParam.shopCategoryId} />
             <InputComponent placeholder="按店铺Id查询" onSearch={onShopCategoryIdChange} />
             <InputComponent placeholder="按店铺名称查询" onSearch={onShopNameChange}/>
@@ -303,7 +200,7 @@ const ShopManagerComponent = () => {
                         <td>{row.shopCategory.shopCategoryId}</td>
                         <td>{row.phone}</td>
                         <td>{row.priority}</td>
-                        <td>{shopStatus[row.enableStatus] }</td>
+                        <td>{statusType[row.enableStatus] }</td>
                         <td>{row.advice}</td>
                         <td>{formatDate(row.createTime)}</td>
                         <td>{formatDate(row.lastEditTime)}</td>
@@ -312,13 +209,14 @@ const ShopManagerComponent = () => {
                 ))}
             </tbody>
         </table>
-        <div className={styles.bottomContainer}>
+        <div className={commonStyles.bottomContainer}>
             <FilterComponent options={pageFilterOptions} value={shopParam.rows} onSelectChange={handleFilterChange} />
-            <span className={styles.dividedSpan}></span>
-                {pageSetting.isShowPrevPage&&<button  className={styles.button} onClick={handlePrevPage} >上一页</button>}
-                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={styles.dividedSpan}></span>}
-                {pageSetting.isShowNextPage&&<button className={styles.button} onClick={handleNextPage}>下一页</button>}
+            <span className={commonStyles.dividedSpan}></span>
+                {pageSetting.isShowPrevPage&&<button  className={commonStyles.button} onClick={handlePrevPage} >上一页</button>}
+                {pageSetting.isShowNextPage&&pageSetting.isShowPrevPage&& <span className={commonStyles.dividedSpan}></span>}
+                {pageSetting.isShowNextPage&&<button className={commonStyles.button} onClick={handleNextPage}>下一页</button>}
             </div>
-    </div>
+        </div>
+    )
 }
 export default  ShopManagerComponent;
