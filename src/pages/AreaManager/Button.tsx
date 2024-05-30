@@ -3,7 +3,7 @@ import { AREA_ADD_PATH, AREA_EDIT_PATH } from '../../config/requestConfig.ts';
 import { postRequestFormData } from '../../request/index.ts';
 import commnStyles from '../../styles/common.module.scss'
 import { InputItem, showToast } from '../../components/dialogComponents/index.tsx';
-import { useModal } from '../../hooks/modals/editModal.tsx';
+import { useModal } from '../../modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
 import { ResponseData } from '../../model/ResponseData.ts';

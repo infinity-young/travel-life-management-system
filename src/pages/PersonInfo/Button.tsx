@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { postRequestFormData } from '../../request/index.ts';
 import { PERSON_INFO_EDIT } from '../../config/requestConfig.ts';
-import { useModal } from '../../hooks/modals/editModal.tsx';
+import { useModal } from '../../modals/editModal.tsx';
 import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import commonStyles from '../../styles/common.module.scss'

@@ -1,7 +1,7 @@
 import { HEADLINE_ADD_PATH, HEADLINE_BATCH_DELETE_PATH, HEADLINE_DELETE_PATH, HEADLINE_EDIT_PATH } from '../../config/requestConfig.ts';
 import React, { useEffect, useRef, useState } from 'react';
-import { useModal } from '../../hooks/modals/editModal.tsx';
-import useConfirmDelete from '../../hooks/modals/deleteModal.tsx';
+import { useModal } from '../../modals/editModal.tsx';
+import useConfirmDelete from '../../modals/deleteModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import { postRequestFormData, postRequestJson } from '../../request/index.ts';

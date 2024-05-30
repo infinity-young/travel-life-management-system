@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { postRequestJson } from '../../request/index.ts';
 import { SHOP_EDIT_PATH } from '../../config/requestConfig.ts';
 import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
-import { useModal } from '../../hooks/modals/editModal.tsx';
+import { useModal } from '../../modals/editModal.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import commonStyles from '../../styles/common.module.scss'
 import { StatusResponseDataType } from '../../model/StatusResponseData.ts';

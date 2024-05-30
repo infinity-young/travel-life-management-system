@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CATEGORY_ADD_PATH, CATEGORY_EDIT_PATH } from '../../config/requestConfig.ts';
 import { postRequestFormData } from '../../request/index.ts';
-import { useModal } from '../../hooks/modals/editModal.tsx';
+import { useModal } from '../../modals/editModal.tsx';
 import { ImageUploadItem, InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { validateForm } from '../../utils/formUtil.ts';
 import commnStyles from '../../styles/common.module.scss'
