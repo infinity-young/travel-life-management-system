@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { postRequestJson } from '../../request/index.ts';
+import { postRequestFormData } from '../../request/index.ts';
 import { SHOP_EDIT_PATH } from '../../config/requestConfig.ts';
 import { InputItem, SelectItem, showToast } from '../../components/dialogComponents/index.tsx';
 import { useModal } from '../../modals/editModal.tsx';
@@ -11,8 +11,12 @@ import { statusSelectOptionsForModal } from '../../config/commonConfig.ts';
 import { ShopFormConfig } from '../../config/shopConfig.ts';
 
 
-export const EditButton = ({ row,shopCategory,setShopParam }) => {
-    const [formData, setFormData] = useState(row)
+export const EditButton = ({ row, shopCategory, setShopParam }) => {
+    const [formData, setFormData] = useState({ ...row })
+      // 当 row 更新时，同时更新 formData 状态
+    useEffect(() => {
+        setFormData({ ...row });
+    }, [row]); // 侦听 row 的变化
     const renderFormDataRef = useRef(formData);
     useEffect(() => {
       renderFormDataRef.current = formData;
@@ -25,7 +29,7 @@ export const EditButton = ({ row,shopCategory,setShopParam }) => {
                 const shopStr = JSON.stringify(renderFormDataRef.current);
                 const formData = new FormData();
                 formData.append('shopStr', shopStr);
-                const response :ResponseData<StatusResponseDataType.safe_t> =  await postRequestJson(SHOP_EDIT_PATH, formData)
+                const response :ResponseData<StatusResponseDataType.safe_t> =  await postRequestFormData(SHOP_EDIT_PATH, formData)
                 if (response.data.success) {
                     setShopParam((prevShopPram) => {
                         return {
