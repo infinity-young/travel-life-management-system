@@ -10,7 +10,10 @@ import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
 import { statusSelectOptions } from '../../config/commonConfig.ts';
 import { PersonFormConfig } from '../../config/personConfig.ts';
 export const EditButton = ({ row,setSearchParams }) => {
-    const [formData, setFormData] = useState(row);
+    const [formData, setFormData] = useState({ ...row });
+    useEffect(() => {
+        setFormData({...row})
+    },[row])
     const formDataRef = useRef(formData)
     useEffect(() => {
         formDataRef.current = formData;

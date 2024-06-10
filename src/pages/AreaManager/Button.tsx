@@ -82,6 +82,14 @@ export const EditButton = ({row,getPageData}) => {
         areaName: row.areaName,
         priority:row.priority
     }
+  useEffect(() => {
+    const defaultFormData = {
+      areaId:row.areaId,
+      areaName: row.areaName,
+      priority:row.priority
+  }
+      setRenderFormData(defaultFormData);
+  }, [row]); // 侦听 row 的变化
     const [renderFormData, setRenderFormData] = useState(defaultFormData);
     const renderFormDataRef = useRef(renderFormData);
     useEffect(() => {

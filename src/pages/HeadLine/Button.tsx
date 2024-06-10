@@ -14,13 +14,16 @@ import { StatusResponseDataType } from '../../model/StatusResponseData.ts';
 //编辑按钮
 export const EditButton = ({row,fetchData}) => {
     //引用数据类型传递的是引用，如果直接引用会导致父组件img标签渲染异常
-    const initState = { ...row } || {};
+  const initState = { ...row } || {};
     //删除图片路径，编辑图片提交的是图片数据，而非服务端文件路径
     delete initState.lineImg;
      //删除弹窗内不使用的数据
     delete initState.createTime;
     delete initState.lastEditTime;
-    const [renderFormData, setRenderFormData] = useState(initState);
+  const [renderFormData, setRenderFormData] = useState(initState);
+  useEffect(() => {
+    setRenderFormData({...row});
+    }, [row]); // 侦听 row 的变化
     const renderFormDataRef = useRef(renderFormData);
     useEffect(() => {
         renderFormDataRef.current = renderFormData;
@@ -123,12 +126,16 @@ export const EditButton = ({row,fetchData}) => {
   }
   
   //删除按钮
-export const DeleteButton = ({row,fetchData}) => {
+export const DeleteButton = ({ row, fetchData }) => {
+  const [buttonData,setButtonData]=useState({...row})
+  useEffect(() => {
+    setButtonData({...row});
+    }, [row]); // 侦听 row 的变化
     const { ConfirmDeleteModal, openDeleteModal ,closeDeleteModal} = useConfirmDelete();
 
     // 删除操作的逻辑
     const handleDelete = async () => {
-        const params={headLineId:row?.lineId}
+        const params={headLineId:buttonData?.lineId}
         const responseData:ResponseData<StatusResponseDataType.safe_t> = await postRequestJson(HEADLINE_DELETE_PATH,{},params)
         if (responseData.data.success) {
             fetchData();

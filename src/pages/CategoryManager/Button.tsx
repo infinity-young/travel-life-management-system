@@ -119,7 +119,10 @@ export const AddButton = ({ firstCategoryData, getCategoryData }) => {
 }
 
 export const EditButton = ({ row, firstCategoryData,getCategoryData }) => {
-    const [formData, setFormData] = useState(row);
+    const [formData, setFormData] = useState({...row});
+    useEffect(() => {
+      setFormData({...row});
+      }, [row]); // 侦听 row 的变化
     const renderFormDataRef = useRef(formData);
     useEffect(() => {
       renderFormDataRef.current = formData;
