@@ -111,7 +111,6 @@ const PersonInfoComponent = () => {
                             <th>用户名</th>
                             <th>性别</th>
                             <th>电子邮箱</th>
-                            <th>用户相片</th>
                             <th>用户类型</th>
                             <th>创建时间</th>
                             <th>最近修改时间</th>
@@ -127,7 +126,6 @@ const PersonInfoComponent = () => {
                                     <td>{row.name}</td>
                                     <td>{genderType[row.gender]}</td>
                                     <td>{row.email}</td>
-                                    <td><img src={IMAGE_PATH + row.profileImg} /></td>
                                     <td>{personType[row.userType] }</td>
                                     <td>{formatDate(row.createTime)}</td>
                                     <td>{formatDate(row.lastEditTime)}</td>
