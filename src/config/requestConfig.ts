@@ -1,5 +1,5 @@
-export const BATH_PATH='http://localhost:8080/basic-webapp/superadmin'
-export const IMAGE_PATH = 'http://localhost:8080/basic-webapp/superadmin/'
+export const BATH_PATH = process.env.NODE_ENV === 'production' ? '/api/superadmin' : 'http://localhost:8080/superadmin'
+export const IMAGE_PATH = process.env.NODE_ENV === 'production' ? '/api/superadmin/' : 'http://localhost:8080/superadmin/'
 export const HEADLINE_GET_PATH = '/listheadlines'
 export const HEADLINE_ADD_PATH = '/addheadline'
 export const HEADLINE_EDIT_PATH = '/modifyheadline'
